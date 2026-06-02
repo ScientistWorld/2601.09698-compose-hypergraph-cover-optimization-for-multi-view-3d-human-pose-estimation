@@ -42,4 +42,4 @@
 - The reproduced result demonstrates the paper's core claim at lightweight scale: hypergraph exact-cover association plus triangulation recovers multi-person 3D poses better than local pairwise association from the same detections.
 
 ## Stop Justification
-- Stopping at `core_claim`: the method, baseline, data substitute, evaluator, scripts, environment, and validated scores are packaged. Larger real-data reproduction remains future work.
+- Completed at milestone `core_claim`.
