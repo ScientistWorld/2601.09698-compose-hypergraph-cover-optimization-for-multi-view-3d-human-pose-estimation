@@ -1,0 +1,68 @@
+{
+  "experiments": {
+    "cmu_panoptic_main": {
+      "_frame_ids": [
+        "scene_0004",
+        "scene_0005",
+        "scene_0007",
+        "scene_0008",
+        "scene_0009",
+        "scene_0011",
+        "scene_0012",
+        "scene_0016",
+        "scene_0017",
+        "scene_0018",
+        "scene_0020",
+        "scene_0022"
+      ],
+      "_slice": "test",
+      "results": {
+        "compose": {
+          "ap_100mm": 47.834592646951826,
+          "ap_150mm": 70.0900641888567,
+          "ap_25mm": 0.0,
+          "ap_50mm": 33.507651175314976,
+          "gt_copy_rate": 0.0,
+          "mpjpe_mm": 59.40960188248908,
+          "pose_count_mae": 2.8333333333333335,
+          "precision_150mm": 44.44444444444444,
+          "recall_500mm": 100.0
+        },
+        "pairwise_baseline": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 1.7241379310344827,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "gt_copy_rate": 0.0,
+          "mpjpe_mm": 537.1998882278612,
+          "pose_count_mae": 1.1666666666666667,
+          "precision_150mm": 6.666666666666667,
+          "recall_500mm": 24.137931034482758
+        }
+      }
+    }
+  },
+  "prediction_files": {
+    "compose": "checkpoints/compose_predictions.json",
+    "pairwise_baseline": "checkpoints/pairwise_baseline_predictions.json"
+  },
+  "slice": "test",
+  "split": {
+    "frame_ids": [
+      "scene_0004",
+      "scene_0005",
+      "scene_0007",
+      "scene_0008",
+      "scene_0009",
+      "scene_0011",
+      "scene_0012",
+      "scene_0016",
+      "scene_0017",
+      "scene_0018",
+      "scene_0020",
+      "scene_0022"
+    ],
+    "slice": "test",
+    "strategy": "Held-out hash-stratified scenes balanced across crossing and non-crossing phases."
+  }
+}

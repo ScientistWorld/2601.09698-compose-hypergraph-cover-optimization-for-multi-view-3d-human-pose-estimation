@@ -1,0 +1,68 @@
+{
+  "experiments": {
+    "cmu_panoptic_main": {
+      "_frame_ids": [
+        "scene_0000",
+        "scene_0001",
+        "scene_0002",
+        "scene_0003",
+        "scene_0006",
+        "scene_0010",
+        "scene_0013",
+        "scene_0014",
+        "scene_0015",
+        "scene_0019",
+        "scene_0021",
+        "scene_0023"
+      ],
+      "_slice": "train",
+      "results": {
+        "compose": {
+          "ap_100mm": 46.24886908556395,
+          "ap_150mm": 78.94925793476517,
+          "ap_25mm": 0.0,
+          "ap_50mm": 20.250047625192806,
+          "gt_copy_rate": 0.0,
+          "mpjpe_mm": 69.37284560817564,
+          "pose_count_mae": 2.5,
+          "precision_150mm": 45.6140350877193,
+          "recall_500mm": 100.0
+        },
+        "pairwise_baseline": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "gt_copy_rate": 0.0,
+          "mpjpe_mm": 549.7189475973775,
+          "pose_count_mae": 1.1666666666666667,
+          "precision_150mm": 0.0,
+          "recall_500mm": 25.925925925925927
+        }
+      }
+    }
+  },
+  "prediction_files": {
+    "compose": "checkpoints/compose_predictions.json",
+    "pairwise_baseline": "checkpoints/pairwise_baseline_predictions.json"
+  },
+  "slice": "train",
+  "split": {
+    "frame_ids": [
+      "scene_0000",
+      "scene_0001",
+      "scene_0002",
+      "scene_0003",
+      "scene_0006",
+      "scene_0010",
+      "scene_0013",
+      "scene_0014",
+      "scene_0015",
+      "scene_0019",
+      "scene_0021",
+      "scene_0023"
+    ],
+    "slice": "train",
+    "strategy": "Hash-stratified train scenes balanced across crossing and non-crossing phases."
+  }
+}
