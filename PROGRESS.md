@@ -66,9 +66,12 @@
 
 - Expand beyond the minimum by adding Shelf/Campus-style settings or another
   real-data subset if more budget is available.
-- Higher milestones remain open: reproduce additional dataset conditions,
-  compare more baselines, and move from synthetic detections to a real
-  multi-view benchmark subset.
+- Higher milestones remain open until the submitted extension job finishes:
+  `scripts/reproduce_plus.sh` now defines a three-camera, three-person
+  Panoptic-sample stress setting that will write `scoring/scores_stress.json`.
+- After that job succeeds, check whether COMPOSE still improves over the
+  pairwise baseline on AP@150, recall@500, and MPJPE before marking
+  `core_claim_plus`.
 
 ## Issues
 
@@ -98,6 +101,9 @@
 - Final verification issue about stale synthetic score artifacts was resolved
   by job `265894a0-2ac`, which regenerated scores on the current
   Panoptic-derived default dataset.
+- Current turn added `--camera-nodes` to `data/panoptic_sample_compose.py` and
+  `scripts/reproduce_plus.sh` to run a sparse-view stress extension. Results
+  are pending the next CPU job.
 
 ## Deviations from Paper
 

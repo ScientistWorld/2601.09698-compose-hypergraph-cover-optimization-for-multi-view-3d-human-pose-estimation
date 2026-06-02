@@ -28,3 +28,8 @@
 - CPU verification job `265894a0-2ac` regenerated predictions and scores on the Panoptic-derived benchmark.
 - COMPOSE achieved AP@150 83.57, recall@500 100.0, and MPJPE 69.26 mm versus the pairwise baseline AP@150 12.47, recall@500 34.03, and MPJPE 443.72 mm.
 - `python validate.py --compare` passed after the regenerated train/test score artifacts used `panoptic_sample_*` scene IDs.
+
+### [2026-06-02 04:55] - core_claim
+- Added a pending `core_claim_plus` stress setting with three CMU Panoptic sample cameras, three augmented people, higher noise, more misses, and more outliers.
+- Extended the Panoptic sample builder with configurable camera-node subsets while keeping the COMPOSE hypergraph exact-cover method unchanged.
+- Submitting a CPU test job to run the existing core reproduction plus the new stress setting; milestone remains `core_claim` until results are available.

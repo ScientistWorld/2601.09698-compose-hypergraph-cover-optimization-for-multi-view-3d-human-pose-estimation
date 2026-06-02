@@ -162,13 +162,20 @@ def visible_in_image(points: list[list[float]], camera: dict[str, Any], margin: 
     return sum(1 for item in visible if item) / max(1, len(visible)) > 0.75
 
 
+def parse_camera_nodes(raw_nodes: str) -> set[int]:
+    nodes = {int(item.strip()) for item in raw_nodes.split(",") if item.strip()}
+    if len(nodes) < 2:
+        raise ValueError("--camera-nodes must contain at least two comma-separated camera node IDs")
+    return nodes
+
+
 def build_dataset(args: argparse.Namespace) -> dict[str, Any]:
     rng = random.Random(args.seed)
     calibration = json.loads(Path(args.calibration).read_text(encoding="utf-8"))
     # The paper uses a fixed CMU Panoptic five-HD-camera protocol on its main
     # sequences. The tiny sample sequence has different useful coverage, so we
     # choose five calibrated HD cameras that observe this augmented scene.
-    hd_nodes = {6, 8, 10, 11, 16}
+    hd_nodes = parse_camera_nodes(args.camera_nodes)
     cameras = [
         normalize_camera(camera)
         for camera in calibration["cameras"]
@@ -239,6 +246,7 @@ def build_dataset(args: argparse.Namespace) -> dict[str, Any]:
         "generator": {
             "frames": len(scenes),
             "people": args.people,
+            "camera_nodes": sorted(hd_nodes),
             "noise_px": args.noise_px,
             "miss_prob": args.miss_prob,
             "outlier_prob": args.outlier_prob,
@@ -255,6 +263,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", default="data/downloads/cmu_panoptic_sample_compose.json")
     parser.add_argument("--frames", type=int, default=72)
     parser.add_argument("--people", type=int, default=2)
+    parser.add_argument(
+        "--camera-nodes",
+        default="6,8,10,11,16",
+        help="Comma-separated HD camera node IDs from the sample calibration.",
+    )
     parser.add_argument("--noise-px", type=float, default=6.0)
     parser.add_argument("--miss-prob", type=float, default=0.13)
     parser.add_argument("--outlier-prob", type=float, default=0.14)
