@@ -2,6 +2,9 @@
 
 ## What Works
 
+- Continuing-agent audit on 2026-06-02 found the existing reproduction
+  trustworthy enough to restore `core_claim` from the reset `method_runs`
+  state.
 - Paper analysis and briefing are complete.
 - `method/compose.py` implements the paper's computational pipeline: candidate
   hyperedges, reprojection-error pruning, weighted exact-cover ILP, and final
@@ -50,6 +53,10 @@
 
 ## Issues
 
+- Audit note: strict `ap_25mm` is zero on the lightweight substitute, but this
+  is consistent with the intentionally noisy synthetic detections and is not
+  the selected primary metric. The primary AP, recall, and MPJPE metrics still
+  show a large COMPOSE advantage over the pairwise baseline.
 - The original CMU Panoptic/Shelf/Campus evaluation would require large video
   data and 2D detector resources. This first runnable environment uses a
   synthetic calibrated substitute to preserve the correspondence/reconstruction

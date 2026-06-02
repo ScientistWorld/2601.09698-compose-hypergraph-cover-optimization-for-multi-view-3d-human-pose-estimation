@@ -2,4 +2,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Reproduced the core claim on the packaged synthetic calibrated multi-view benchmark. COMPOSE hypergraph exact-cover pipeline runs end-to-end and outperforms the pairwise baseline; validate.py --compare passes."
+notes: "Continuation audit restored core_claim. COMPOSE implements the paper's hypergraph exact-cover method, eval is independent, and validate.py --compare passes with COMPOSE outperforming the pairwise baseline on the packaged synthetic benchmark."
