@@ -18,3 +18,8 @@
 - Continuing-agent audit confirmed `method/compose.py` implements the paper's actual hypergraph exact-cover algorithm rather than a surrogate.
 - Confirmed `eval/` is artifact-based and independent from `method/`; `scripts/evaluate.sh` works through `eval/evaluate_predictions.py`.
 - Re-ran `python validate.py --compare`; scoring and structural checks pass.
+
+### [2026-06-02 04:36] - core_claim
+- Added a CMU Panoptic sample-derived benchmark builder using official calibration and skeleton assets.
+- Updated default scripts to regenerate and score the Panoptic-derived benchmark instead of only rescoring existing synthetic artifacts.
+- Submitting a CPU smoke job to validate the upgraded benchmark path before claiming any higher milestone.

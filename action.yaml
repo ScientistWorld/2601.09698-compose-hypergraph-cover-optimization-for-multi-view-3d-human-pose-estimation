@@ -1,8 +1,7 @@
-# Split evaluation is complete; end this design phase.
-# Do NOT sleep, poll, or wait. The system reads this file
-# only after your turn ends.
-action: done
+# Regenerate and validate the upgraded lightweight COMPOSE benchmark.
+# Do NOT sleep or poll; the system reads this file after the turn ends.
+action: submit
 gpus: 0
-test: false
+test: true
 milestone: core_claim
-notes: "Packaging audit passed: tracked synthetic dataset is self-contained, download.sh regenerates it if missing, and no shared/ or external artifact path fixes were needed."
+notes: "CPU smoke job runs download/generation, pairwise baseline, COMPOSE, train/test evaluation, and validate.py --compare on the CMU Panoptic sample-derived benchmark."

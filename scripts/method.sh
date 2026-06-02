@@ -10,7 +10,7 @@ set -e
 
 cd /home/user
 
-DATA="${1:-data/synthetic_compose_dataset.json}"
+DATA="${1:-data/downloads/cmu_panoptic_sample_compose.json}"
 OUTPUT="${2:-checkpoints/compose_predictions.json}"
 
 mkdir -p checkpoints

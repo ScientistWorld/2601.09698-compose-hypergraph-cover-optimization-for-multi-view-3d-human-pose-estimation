@@ -18,7 +18,7 @@ set -e
 cd /home/user
 
 NAME="${1:-pairwise_baseline}"
-DATA="${2:-data/synthetic_compose_dataset.json}"
+DATA="${2:-data/downloads/cmu_panoptic_sample_compose.json}"
 OUTPUT="${3:-checkpoints/${NAME}_predictions.json}"
 
 mkdir -p checkpoints

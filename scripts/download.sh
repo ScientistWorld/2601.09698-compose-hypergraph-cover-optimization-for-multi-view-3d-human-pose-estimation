@@ -9,8 +9,8 @@
 #
 # Update the storage estimate below as you add downloads.
 #
-# Estimated total download size: 0 GB
-# Estimated disk usage after extraction: 0 GB
+# Estimated total download size: <1 MB
+# Estimated disk usage after extraction: <10 MB
 #
 # This script is intentionally workspace-local so a fresh clone can recreate
 # all required assets without relying on machine-specific caches.
@@ -19,6 +19,21 @@ set -e
 
 cd /home/user
 
-# This reproduction uses a tracked deterministic synthetic benchmark and
-# requires no external datasets, pretrained models, or detector weights.
+# Fetch the small official CMU Panoptic sample assets used to build the
+# lightweight real-calibration benchmark. URLs were verified with HTTP 200.
+mkdir -p data/downloads/cmu_panoptic_sample
+[ -e data/downloads/cmu_panoptic_sample/calibration_171204_pose1_sample.json ] || \
+  curl -L --fail \
+    -o data/downloads/cmu_panoptic_sample/calibration_171204_pose1_sample.json \
+    http://domedb.perception.cs.cmu.edu/webdata/dataset/171204_pose1_sample/calibration_171204_pose1_sample.json
+[ -e data/downloads/cmu_panoptic_sample/hdPose3d_stage1_coco19.tar ] || \
+  curl -L --fail \
+    -o data/downloads/cmu_panoptic_sample/hdPose3d_stage1_coco19.tar \
+    http://domedb.perception.cs.cmu.edu/webdata/dataset/171204_pose1_sample/hdPose3d_stage1_coco19.tar
+
+[ -e data/downloads/cmu_panoptic_sample_compose.json ] || \
+  python data/panoptic_sample_compose.py --output data/downloads/cmu_panoptic_sample_compose.json
+
+# Retain the original deterministic synthetic benchmark as a fallback and
+# debugging fixture.
 [ -e data/synthetic_compose_dataset.json ] || python data/synthetic_compose.py --output data/synthetic_compose_dataset.json

@@ -22,7 +22,7 @@ The paper's main reported optimization-based baseline on CMU Panoptic is MvPose
 using the same 2D keypoint detector. The target method improves AP at strict
 thresholds and lowers MPJPE relative to that baseline. The runnable reproduction
 also includes a simple pairwise triangulation baseline to verify that global
-multi-view association is nontrivial on the synthetic benchmark.
+multi-view association is nontrivial on the lightweight benchmark.
 
 ## Evaluation Protocol
 
@@ -30,5 +30,7 @@ Run a method to write predictions as JSON, then call `scripts/evaluate.sh`.
 Evaluation code in `eval/` reads only prediction artifacts and the benchmark
 data; it does not import or rerun code from `method/`. The paper evaluates CMU
 Panoptic with five cameras and reports AP, recall, and MPJPE. This environment
-uses a deterministic calibrated synthetic substitute with the same output and
-metric structure for lightweight reproducibility.
+uses a deterministic CMU Panoptic sample-derived benchmark with official
+camera calibration and skeleton poses, plus generated noisy/missing/spurious 2D
+detections, to preserve the same output and metric structure at lightweight
+scale.

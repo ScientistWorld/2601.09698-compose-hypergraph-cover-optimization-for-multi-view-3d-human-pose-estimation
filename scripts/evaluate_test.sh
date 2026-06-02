@@ -32,11 +32,11 @@ evaluate_one() {
 if [[ $# -gt 0 && -n "${1:-}" ]]; then
   METHOD_NAME="$1"
   PREDICTIONS="${2:-checkpoints/${METHOD_NAME}_predictions.json}"
-  DATA="${3:-data/synthetic_compose_dataset.json}"
+  DATA="${3:-data/downloads/cmu_panoptic_sample_compose.json}"
   EXPERIMENT="${4:-cmu_panoptic_main}"
   evaluate_one "$METHOD_NAME" "$PREDICTIONS" "$DATA" "$EXPERIMENT"
 else
-  DATA="data/synthetic_compose_dataset.json"
+  DATA="data/downloads/cmu_panoptic_sample_compose.json"
   EXPERIMENT="cmu_panoptic_main"
   rm -f "$OUTPUT"
   found=0

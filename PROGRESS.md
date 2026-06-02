@@ -11,6 +11,8 @@
 - `method/compose.py` implements the paper's computational pipeline: candidate
   hyperedges, reprojection-error pruning, weighted exact-cover ILP, and final
   triangulation.
+- `data/panoptic_sample_compose.py` builds a lightweight CMU Panoptic-derived
+  benchmark from official sample calibration and 3D skeleton frames.
 - `data/synthetic_compose_dataset.json` provides a tracked deterministic
   calibrated multi-camera benchmark with noisy/missing/outlier detections.
 - `eval/` scores prediction artifacts without importing `method/`.
@@ -25,6 +27,11 @@
   synthetic benchmark while maintaining full recovery recall.
 - Audit conclusion: the implementation, evaluator, scripts, environment, and
   score contract are complete enough for a reusable core-claim gym.
+- 2026-06-02 04:36 update: scripts now default to
+  `data/downloads/cmu_panoptic_sample_compose.json`, generated from the
+  official CMU Panoptic sample assets by `scripts/download.sh`; a CPU smoke job
+  is being submitted to regenerate predictions and validate scores on that
+  upgraded benchmark.
 
 ## Results
 
@@ -51,6 +58,8 @@
 
 - Expand beyond the minimum by adding another synthetic condition or a real
   lightweight benchmark subset.
+- Inspect the submitted Panoptic-derived benchmark scores and retune only
+  scale-sensitive thresholds if validation shows the metric scale moved.
 - Higher milestones remain open: reproduce additional dataset conditions,
   compare more baselines, and move from synthetic detections to a real
   multi-view benchmark subset.
@@ -67,6 +76,9 @@
   data and 2D detector resources. This first runnable environment uses a
   synthetic calibrated substitute to preserve the correspondence/reconstruction
   problem at lightweight scale.
+- The upgraded default benchmark uses official CMU Panoptic sample camera
+  calibration and skeleton poses, then deterministically creates multi-person
+  scenes because the public sample contains only one annotated body per frame.
 - Local login-node Python lacks `numpy`; dependencies are installed through
   `environment/setup.sh` and verified by submitted jobs.
 - First CPU smoke job failed before running COMPOSE because
@@ -85,6 +97,11 @@
   with 2D pose detections, occlusions, noise, and outliers. Reason: lightweight
   first reproduction without large detector/data downloads; the method
   algorithm is not replaced.
+- Current default data: official CMU Panoptic sample calibration and skeleton
+  frames with deterministic translated people, projected detections, occlusion,
+  noise, and outliers. Reason: the public sample is small and has real
+  calibration/pose geometry, but does not include the paper's full multi-person
+  benchmark videos or detector outputs.
 - Paper detector: ViTPose top-down 2D keypoints. Reproduction substitute:
   generated 2D keypoints with controlled noise. Reason: the paper's core claim
   is the correspondence optimization after 2D detection, and this keeps that

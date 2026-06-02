@@ -28,7 +28,7 @@ mkdir -p scoring
 
 METHOD_NAME="${1:-compose}"
 PREDICTIONS="${2:-checkpoints/${METHOD_NAME}_predictions.json}"
-DATA="${3:-data/synthetic_compose_dataset.json}"
+DATA="${3:-data/downloads/cmu_panoptic_sample_compose.json}"
 EXPERIMENT="${4:-cmu_panoptic_main}"
 
 python eval/evaluate_predictions.py \
