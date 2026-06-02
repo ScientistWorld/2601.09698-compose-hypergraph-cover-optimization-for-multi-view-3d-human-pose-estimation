@@ -1,9 +1,8 @@
-# This iteration writes files only — do NOT submit compute jobs.
-# Once you set action to 'done', STOP immediately.
+# Run split evaluation on the compute node, then stop.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: done
+action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Improvements: hash-stratified train/test split, added precision/count/leakage sentinel metrics, completed metric metadata. Notes: see DESIGN_NOTES.md for runtime concerns."
+notes: "Run evaluate_{train,test}.sh against discovered final prediction artifacts; populate split scores for inspection."
