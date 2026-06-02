@@ -1,7 +1,6 @@
-# Regenerate and validate the upgraded lightweight COMPOSE benchmark.
-# Do NOT sleep or poll; the system reads this file after the turn ends.
-action: submit
+# Final verification complete; the system reads this file after the turn ends.
+action: done
 gpus: 0
-test: true
+test: false
 milestone: core_claim
-notes: "CPU smoke job runs download/generation, pairwise baseline, COMPOSE, train/test evaluation, and validate.py --compare on the CMU Panoptic sample-derived benchmark."
+notes: "Final verification passed after CPU job 265894a0-2ac regenerated Panoptic-derived scores and validate.py --compare passed."

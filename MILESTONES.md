@@ -23,3 +23,8 @@
 - Added a CMU Panoptic sample-derived benchmark builder using official calibration and skeleton assets.
 - Updated default scripts to regenerate and score the Panoptic-derived benchmark instead of only rescoring existing synthetic artifacts.
 - Submitting a CPU smoke job to validate the upgraded benchmark path before claiming any higher milestone.
+
+### [2026-06-02 04:40] - core_claim
+- CPU verification job `265894a0-2ac` regenerated predictions and scores on the Panoptic-derived benchmark.
+- COMPOSE achieved AP@150 83.57, recall@500 100.0, and MPJPE 69.26 mm versus the pairwise baseline AP@150 12.47, recall@500 34.03, and MPJPE 443.72 mm.
+- `python validate.py --compare` passed after the regenerated train/test score artifacts used `panoptic_sample_*` scene IDs.

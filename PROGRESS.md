@@ -29,9 +29,11 @@
   score contract are complete enough for a reusable core-claim gym.
 - 2026-06-02 04:36 update: scripts now default to
   `data/downloads/cmu_panoptic_sample_compose.json`, generated from the
-  official CMU Panoptic sample assets by `scripts/download.sh`; a CPU smoke job
-  is being submitted to regenerate predictions and validate scores on that
-  upgraded benchmark.
+  official CMU Panoptic sample assets by `scripts/download.sh`.
+- CPU verification job `265894a0-2ac` completed successfully on the
+  Panoptic-derived benchmark: `scripts/reproduce.sh` regenerated method and
+  baseline predictions, train/test scoring used `panoptic_sample_*` scene IDs,
+  and `python validate.py --compare` passed.
 
 ## Results
 
@@ -53,13 +55,17 @@
   - `pairwise_baseline`: AP@150 0.30, AP@100 0.0, recall@500 25.0, MPJPE
     543.01 mm.
   These support the core claim on the lightweight synthetic substitute.
+- Final Panoptic-derived benchmark scores from job `265894a0-2ac`:
+  - `compose`: AP@150 83.57, AP@100 63.99, recall@500 100.0, MPJPE 69.26 mm.
+  - `pairwise_baseline`: AP@150 12.47, AP@100 7.94, recall@500 34.03, MPJPE
+    443.72 mm.
+  Train/test slices are comparable: COMPOSE AP@150 is 82.59 on train and 84.82
+  on held-out test.
 
 ## Remaining
 
-- Expand beyond the minimum by adding another synthetic condition or a real
-  lightweight benchmark subset.
-- Inspect the submitted Panoptic-derived benchmark scores and retune only
-  scale-sensitive thresholds if validation shows the metric scale moved.
+- Expand beyond the minimum by adding Shelf/Campus-style settings or another
+  real-data subset if more budget is available.
 - Higher milestones remain open: reproduce additional dataset conditions,
   compare more baselines, and move from synthetic detections to a real
   multi-view benchmark subset.
@@ -89,6 +95,9 @@
   scores included bookkeeping fields and a reproduction-only baseline key absent
   from `reference.json`. Fixed by emitting only declared metrics and adding the
   pairwise baseline key as a validation reference.
+- Final verification issue about stale synthetic score artifacts was resolved
+  by job `265894a0-2ac`, which regenerated scores on the current
+  Panoptic-derived default dataset.
 
 ## Deviations from Paper
 
