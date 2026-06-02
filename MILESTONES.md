@@ -38,7 +38,7 @@
 
 ### [2026-06-02 04:32] - core_claim
 - CPU retry job `faa8138c-d63` completed successfully with `scripts/reproduce.sh` followed by `python validate.py --compare`.
-- COMPOSE improves over the pairwise baseline on the synthetic correspondence benchmark: AP@100 46.54 vs 0.0, AP@150 72.68 vs 0.30, recall@500 100.0 vs 25.0, and MPJPE 64.21 mm vs 543.01 mm.
+- COMPOSE improves over the pairwise baseline on the synthetic correspondence benchmark: AP@150 72.68 vs 0.30, AP@100 46.54 vs 0.0, recall@500 100.0 vs 25.0, and MPJPE 64.21 mm vs 543.01 mm.
 - The reproduced result demonstrates the paper's core claim at lightweight scale: hypergraph exact-cover association plus triangulation recovers multi-person 3D poses better than local pairwise association from the same detections.
 
 ## Stop Justification

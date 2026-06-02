@@ -32,8 +32,8 @@
 - After cleanup, `python validate.py --compare` passes locally using the
   compute-generated prediction artifacts and regenerated `scoring/scores.json`.
   The final validated reproduction scores are:
-  - `compose`: AP@100 46.54, AP@150 72.68, recall@500 100.0, MPJPE 64.21 mm.
-  - `pairwise_baseline`: AP@100 0.0, AP@150 0.30, recall@500 25.0, MPJPE
+  - `compose`: AP@150 72.68, AP@100 46.54, recall@500 100.0, MPJPE 64.21 mm.
+  - `pairwise_baseline`: AP@150 0.30, AP@100 0.0, recall@500 25.0, MPJPE
     543.01 mm.
   These support the core claim on the lightweight synthetic substitute.
 
