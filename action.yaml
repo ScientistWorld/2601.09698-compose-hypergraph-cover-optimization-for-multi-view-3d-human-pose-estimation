@@ -1,6 +1,5 @@
-# Final verification complete; the system reads this file after the turn ends.
-action: done
+action: submit
 gpus: 0
-test: false
+test: true
 milestone: core_claim
-notes: "Final verification passed after CPU job 265894a0-2ac regenerated Panoptic-derived scores and validate.py --compare passed."
+notes: "Run the validated core COMPOSE reproduction plus a new sparse 3-view, 3-person Panoptic-sample stress extension. If the stress scores support the same advantage over the pairwise baseline, promote to core_claim_plus next turn."
