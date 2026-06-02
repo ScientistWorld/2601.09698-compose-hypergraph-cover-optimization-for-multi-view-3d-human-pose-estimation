@@ -265,10 +265,6 @@ def evaluate_pose_predictions(
     metrics: dict[str, Any] = {
         "mpjpe_mm": (sum(mpjpe_values) / len(mpjpe_values)) if mpjpe_values else None,
         "recall_500mm": float(100.0 * recall_matches / total_gt) if total_gt else 0.0,
-        "num_frames": len(data_frames),
-        "num_ground_truth": total_gt,
-        "num_predictions": total_predictions,
-        "num_matched_for_mpjpe": len(mpjpe_values),
     }
 
     for threshold in thresholds_mm:

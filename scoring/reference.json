@@ -13,6 +13,9 @@
         "mpjpe_mm": {"higher_is_better": false, "coefficient": -0.5}
       },
       "results": {
+        "pairwise_baseline": {
+          "type": "baseline"
+        },
         "mvpose": {
           "type": "baseline",
           "ap_25mm": 37.63,

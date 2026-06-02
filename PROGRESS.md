@@ -10,23 +10,35 @@
   calibrated multi-camera benchmark with noisy/missing/outlier detections.
 - `eval/` scores prediction artifacts without importing `method/`.
 - `python validate.py` passes before job submission.
+- COMPOSE has run end to end inside the compute container on the synthetic
+  benchmark and wrote `checkpoints/compose_predictions.json`.
 
 ## Results
 
-- No reproduced scores yet. A CPU smoke job is being submitted to run
-  `scripts/reproduce.sh` and write `scoring/scores.json`.
 - Local baseline/evaluator smoke test after the first failed job produced a
   valid `pairwise_baseline` score on the synthetic benchmark. Strict AP was
   near zero and MPJPE was high, confirming the task is nontrivial for the
   pairwise baseline.
+- Second CPU job results before validation cleanup:
+  - `compose`: AP@50 25.86, AP@100 46.54, AP@150 72.68, recall@500 100.0,
+    MPJPE 64.21 mm.
+  - `pairwise_baseline`: AP@50 0.0, AP@100 0.0, AP@150 0.30, recall@500
+    25.0, MPJPE 543.01 mm.
+  These support the synthetic core claim, but final validation failed on
+  scoring schema and must be rerun after patching.
+- After cleanup, `python validate.py --compare` passes locally using the
+  compute-generated prediction artifacts and regenerated `scoring/scores.json`.
+  The next submitted job reruns the full script inside the container to confirm
+  the patched environment end to end.
 
 ## Remaining
 
 - Confirm the full pipeline runs inside the compute container.
-- Inspect `scoring/scores.json`; if COMPOSE is not clearly better than the
-  pairwise baseline, tune pruning/ILP hyperparameters or dataset difficulty and
-  resubmit.
-- After `method_runs`, iterate toward `core_claim`.
+- If the retry job validates successfully, update the milestone to
+  `core_claim` because COMPOSE clearly improves over the pairwise association
+  baseline while maintaining full 500 mm recall on the synthetic substitute.
+- Expand beyond the minimum by adding another synthetic condition or a real
+  lightweight benchmark subset if time remains.
 
 ## Issues
 
@@ -40,6 +52,10 @@
   `baseline/pairwise_baseline.py` iterated the tracked `scenes` data schema as
   generic dictionary entries. Fixed by normalizing top-level scenes/cameras into
   frame views and by reading named 2D joints.
+- Second CPU smoke job ran COMPOSE successfully but failed `validate.py` because
+  scores included bookkeeping fields and a reproduction-only baseline key absent
+  from `reference.json`. Fixed by emitting only declared metrics and adding the
+  pairwise baseline key as a validation reference.
 
 ## Deviations from Paper
 

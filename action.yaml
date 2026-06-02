@@ -30,5 +30,5 @@
 action: submit
 gpus: 0
 test: true
-milestone: none
-notes: "Retry CPU smoke test after fixing dataset schema normalization in baseline/evaluator; run synthetic COMPOSE reproduction and validate --compare."
+milestone: method_runs
+notes: "Retry full CPU reproduction after scoring contract cleanup; expect scripts/run.sh to regenerate validated scores supporting the synthetic core claim."

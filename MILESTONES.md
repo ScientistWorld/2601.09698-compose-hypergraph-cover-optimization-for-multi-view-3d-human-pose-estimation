@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: none**
+**Current: method_runs**
 
 <!-- Milestone levels (update "Current" above as you progress):
   none             — just started, no meaningful progress yet
@@ -26,5 +26,15 @@
 - Patched baseline and evaluator schema normalization and verified the baseline/evaluator path locally.
 - Resubmitting the CPU smoke job; no milestone advance until COMPOSE runs in the compute container.
 
+### [2026-06-02 04:15] - method_runs
+- Second CPU job ran the COMPOSE implementation end to end on the synthetic benchmark and wrote prediction artifacts.
+- COMPOSE produced substantially better synthetic metrics than the pairwise baseline, but the job failed final validation because `scores.json` contained bookkeeping fields not declared in `reference.json`.
+- Patched the scorer to emit only declared scientific metrics and resubmitting before claiming `core_claim`.
+
+### [2026-06-02 04:24] - method_runs
+- Regenerated `scoring/scores.json` from the compute-produced prediction artifacts after the scoring contract fix.
+- Local `python validate.py --compare` now passes and shows COMPOSE ahead of the pairwise baseline on AP@50/100/150, recall@500, and MPJPE.
+- Resubmitting the full CPU reproduction script so the patched environment is validated inside the compute container before advancing to `core_claim`.
+
 ## Stop Justification
-- Not stopped; first execution job pending.
+- Not stopped; full post-fix validation job pending.
