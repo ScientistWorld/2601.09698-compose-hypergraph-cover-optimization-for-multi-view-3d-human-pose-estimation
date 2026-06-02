@@ -13,3 +13,8 @@
 - Ran the packaged reproduction on the synthetic substitute benchmark.
 - COMPOSE substantially outperformed the pairwise baseline on AP@150, recall@500, and MPJPE while preserving the paper's optimization pipeline.
 - `python validate.py --compare` passes with the reproduced score artifacts.
+
+### [2026-06-02 04:15] - core_claim
+- Continuing-agent audit confirmed `method/compose.py` implements the paper's actual hypergraph exact-cover algorithm rather than a surrogate.
+- Confirmed `eval/` is artifact-based and independent from `method/`; `scripts/evaluate.sh` works through `eval/evaluate_predictions.py`.
+- Re-ran `python validate.py --compare`; scoring and structural checks pass.

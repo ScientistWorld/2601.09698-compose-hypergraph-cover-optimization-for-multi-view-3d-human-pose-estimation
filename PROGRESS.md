@@ -2,6 +2,8 @@
 
 ## What Works
 
+- Continuing-agent audit at 2026-06-02 04:15 reconfirmed the workspace after
+  the milestone reset and restored `core_claim`.
 - Continuing-agent audit on 2026-06-02 found the existing reproduction
   trustworthy enough to restore `core_claim` from the reset `method_runs`
   state.
@@ -21,6 +23,8 @@
 - Current milestone is `core_claim`: the proposed hypergraph exact-cover
   method beats the pairwise association baseline on the scored nontrivial
   synthetic benchmark while maintaining full recovery recall.
+- Audit conclusion: the implementation, evaluator, scripts, environment, and
+  score contract are complete enough for a reusable core-claim gym.
 
 ## Results
 
@@ -53,6 +57,8 @@
 
 ## Issues
 
+- 2026-06-02 04:15 audit found no new correctness issues requiring code
+  changes.
 - Audit note: strict `ap_25mm` is zero on the lightweight substitute, but this
   is consistent with the intentionally noisy synthetic detections and is not
   the selected primary metric. The primary AP, recall, and MPJPE metrics still
