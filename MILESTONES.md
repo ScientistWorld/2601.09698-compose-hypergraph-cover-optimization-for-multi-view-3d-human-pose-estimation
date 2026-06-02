@@ -21,5 +21,10 @@
 - Added a deterministic synthetic calibrated multi-view benchmark and reusable evaluator; static validation passes.
 - Submitted a CPU smoke job to verify the packaged pipeline end to end before claiming `method_runs`.
 
+### [2026-06-02 04:08] - none
+- First CPU smoke job failed in the pairwise baseline due to a schema mismatch with the tracked `scenes` dataset.
+- Patched baseline and evaluator schema normalization and verified the baseline/evaluator path locally.
+- Resubmitting the CPU smoke job; no milestone advance until COMPOSE runs in the compute container.
+
 ## Stop Justification
 - Not stopped; first execution job pending.

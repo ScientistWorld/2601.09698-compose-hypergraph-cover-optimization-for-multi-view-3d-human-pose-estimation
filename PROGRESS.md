@@ -15,6 +15,10 @@
 
 - No reproduced scores yet. A CPU smoke job is being submitted to run
   `scripts/reproduce.sh` and write `scoring/scores.json`.
+- Local baseline/evaluator smoke test after the first failed job produced a
+  valid `pairwise_baseline` score on the synthetic benchmark. Strict AP was
+  near zero and MPJPE was high, confirming the task is nontrivial for the
+  pairwise baseline.
 
 ## Remaining
 
@@ -32,6 +36,10 @@
   problem at lightweight scale.
 - Local login-node Python lacks `numpy`; dependencies are installed through
   `environment/setup.sh` and verified by submitted jobs.
+- First CPU smoke job failed before running COMPOSE because
+  `baseline/pairwise_baseline.py` iterated the tracked `scenes` data schema as
+  generic dictionary entries. Fixed by normalizing top-level scenes/cameras into
+  frame views and by reading named 2D joints.
 
 ## Deviations from Paper
 

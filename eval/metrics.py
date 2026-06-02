@@ -38,6 +38,27 @@ def iter_frames(payload: Any) -> list[tuple[str, dict[str, Any]]]:
     raise TypeError("Expected a JSON object/list with frames")
 
 
+def normalize_data_payload(payload: Any) -> Any:
+    """Convert the tracked benchmark schema to the evaluator frame schema."""
+
+    if not isinstance(payload, dict) or "scenes" not in payload:
+        return payload
+    joint_names = payload["task"]["joint_names"]
+    frames = []
+    for scene in payload["scenes"]:
+        ground_truth = []
+        for person in scene.get("people", []):
+            joints = person["joints_3d"]
+            ground_truth.append(
+                {
+                    "person_id": person.get("person_id", len(ground_truth)),
+                    "joints_3d": [joints[name] for name in joint_names],
+                }
+            )
+        frames.append({"frame_id": scene["scene_id"], "ground_truth": ground_truth})
+    return {"frames": frames}
+
+
 def normalize_joints(joints: Any) -> list[list[float]]:
     """Convert a JSON joint container to a ``J x 3`` float list."""
 
@@ -204,7 +225,7 @@ def evaluate_pose_predictions(
     """Evaluate predictions against ground truth frames."""
 
     pred_frames = dict(iter_frames(prediction_payload))
-    data_frames = iter_frames(data_payload)
+    data_frames = iter_frames(normalize_data_payload(data_payload))
 
     all_frame_preds: list[list[PoseRecord]] = []
     all_frame_gts: list[list[PoseRecord]] = []

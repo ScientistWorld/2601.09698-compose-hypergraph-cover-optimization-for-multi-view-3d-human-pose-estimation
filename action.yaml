@@ -31,4 +31,4 @@ action: submit
 gpus: 0
 test: true
 milestone: none
-notes: "CPU smoke test: install numpy/pulp overlay, run synthetic COMPOSE reproduction, baseline, evaluator, and validate --compare."
+notes: "Retry CPU smoke test after fixing dataset schema normalization in baseline/evaluator; run synthetic COMPOSE reproduction and validate --compare."

@@ -89,7 +89,24 @@ def projection_matrix(camera: dict[str, Any] | None) -> list[list[float]] | None
         if k is not None and r is not None and len(t) >= 3:
             rt = [r[row] + [t[row]] for row in range(3)]
             return matmul(k, rt)
+    if "intrinsics" in camera and "extrinsics" in camera:
+        k = matrix_nxm(camera["intrinsics"], 3, 3)
+        r = matrix_nxm(camera["extrinsics"].get("rotation_world_to_camera"), 3, 3)
+        t = [float(value) for value in flatten(camera["extrinsics"].get("translation_world_to_camera", []))]
+        if k is not None and r is not None and len(t) >= 3:
+            rt = [r[row] + [t[row]] for row in range(3)]
+            return matmul(k, rt)
     return None
+
+
+def detection_joints_2d(det: dict[str, Any]) -> list[list[float]]:
+    if "joints_2d" in det:
+        return joints_array(det["joints_2d"], 2)
+    if "keypoints" in det:
+        return joints_array(det["keypoints"], 2)
+    if "joints" in det:
+        return [[float(joint["xy"][0]), float(joint["xy"][1])] for joint in det["joints"]]
+    raise KeyError("2D detection must contain joints_2d, keypoints, or joints")
 
 
 def collect_view_detections(frame: dict[str, Any]) -> list[dict[str, Any]]:
@@ -97,20 +114,20 @@ def collect_view_detections(frame: dict[str, Any]) -> list[dict[str, Any]]:
     for view in frame.get("views", []) or []:
         if not isinstance(view, dict):
             continue
-        view_id = str(view.get("view_id", view.get("id", len(cameras))))
+        view_id = str(view.get("view_id", view.get("camera_id", view.get("id", len(cameras)))))
         cameras[view_id] = projection_matrix(view.get("camera", view))
 
     detections = []
     for view in frame.get("views", []) or []:
         if not isinstance(view, dict):
             continue
-        view_id = str(view.get("view_id", view.get("id", len(detections))))
+        view_id = str(view.get("view_id", view.get("camera_id", view.get("id", len(detections)))))
         for det_idx, det in enumerate(view.get("detections", view.get("poses_2d", [])) or []):
             detections.append(
                 {
                     "view_id": view_id,
                     "det_id": str(det.get("detection_id", det.get("id", det_idx))),
-                    "joints_2d": joints_array(det["joints_2d"], 2),
+                    "joints_2d": detection_joints_2d(det),
                     "score": float(det.get("score", det.get("confidence", 1.0))),
                     "P": cameras.get(view_id),
                 }
@@ -126,12 +143,32 @@ def collect_view_detections(frame: dict[str, Any]) -> list[dict[str, Any]]:
             {
                 "view_id": view_id,
                 "det_id": str(det.get("detection_id", det.get("id", det_idx))),
-                "joints_2d": joints_array(det["joints_2d"], 2),
+                "joints_2d": detection_joints_2d(det),
                 "score": float(det.get("score", det.get("confidence", 1.0))),
                 "P": proj,
             }
         )
     return [det for det in detections if det["P"] is not None]
+
+
+def normalize_top_level_dataset(payload: Any) -> Any:
+    if not isinstance(payload, dict) or "scenes" not in payload:
+        return payload
+    camera_by_id = {str(camera["camera_id"]): camera for camera in payload.get("cameras", [])}
+    frames = []
+    for scene in payload["scenes"]:
+        views = []
+        for view in scene.get("views", []):
+            camera_id = str(view["camera_id"])
+            views.append(
+                {
+                    "camera_id": camera_id,
+                    "camera": camera_by_id.get(camera_id),
+                    "detections": view.get("detections", []),
+                }
+            )
+        frames.append({"frame_id": scene["scene_id"], "views": views})
+    return {"frames": frames}
 
 
 def solve_3x3(matrix: list[list[float]], vector: list[float]) -> list[float]:
@@ -296,7 +333,7 @@ def main() -> int:
         payload = json.load(handle)
 
     frames = {}
-    for frame_id, frame in iter_frames(payload):
+    for frame_id, frame in iter_frames(normalize_top_level_dataset(payload)):
         frames[frame_id] = {
             "predicted_poses": build_predictions_for_frame(
                 frame,
