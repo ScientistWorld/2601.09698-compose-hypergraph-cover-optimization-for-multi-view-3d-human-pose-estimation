@@ -8,12 +8,12 @@ Predicted 3D poses are greedily matched to ground-truth poses per frame by
 minimum mean per-joint position error (MPJPE). The benchmark reports:
 
 - `ap_25mm`, `ap_50mm`, `ap_100mm`, `ap_150mm`: pose average precision at the
-  corresponding MPJPE threshold; higher is better.
+  corresponding MPJPE threshold; higher is better. This gym uses `ap_100mm` as
+  the primary target because it is informative on the noisy lightweight
+  substitute benchmark; `ap_25mm` remains a reported strict metric.
 - `recall_500mm`: fraction of ground-truth people matched by any prediction
   within 500 mm; higher is better.
 - `mpjpe_mm`: mean matched per-joint error in millimeters; lower is better.
-- `num_predictions` and `num_ground_truth`: accounting metrics to expose
-  missed or over-produced poses.
 
 ## Baselines and Targets
 

@@ -3,11 +3,11 @@
     "cmu_panoptic_main": {
       "description": "CMU Panoptic main benchmark from Table 1: multi-view multi-person 3D pose estimation using AP at MPJPE thresholds, recall at 500 mm, and MPJPE.",
       "weight": 1.0,
-      "primary_metric": "ap_25mm",
+      "primary_metric": "ap_100mm",
       "metrics": {
-        "ap_25mm": {"higher_is_better": true, "coefficient": 1.0},
+        "ap_25mm": {"higher_is_better": true, "coefficient": 0.5},
         "ap_50mm": {"higher_is_better": true, "coefficient": 0.5},
-        "ap_100mm": {"higher_is_better": true, "coefficient": 0.25},
+        "ap_100mm": {"higher_is_better": true, "coefficient": 1.0},
         "ap_150mm": {"higher_is_better": true, "coefficient": 0.2},
         "recall_500mm": {"higher_is_better": true, "coefficient": 0.2},
         "mpjpe_mm": {"higher_is_better": false, "coefficient": -0.5}

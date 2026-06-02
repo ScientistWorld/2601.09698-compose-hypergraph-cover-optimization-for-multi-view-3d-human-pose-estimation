@@ -12,6 +12,9 @@
 - `python validate.py` passes before job submission.
 - COMPOSE has run end to end inside the compute container on the synthetic
   benchmark and wrote `checkpoints/compose_predictions.json`.
+- The full CPU reproduction job `faa8138c-d63` completed successfully:
+  `scripts/reproduce.sh` regenerated predictions/scores and
+  `python validate.py --compare` passed.
 
 ## Results
 
@@ -28,17 +31,19 @@
   scoring schema and must be rerun after patching.
 - After cleanup, `python validate.py --compare` passes locally using the
   compute-generated prediction artifacts and regenerated `scoring/scores.json`.
-  The next submitted job reruns the full script inside the container to confirm
-  the patched environment end to end.
+  The final validated reproduction scores are:
+  - `compose`: AP@100 46.54, AP@150 72.68, recall@500 100.0, MPJPE 64.21 mm.
+  - `pairwise_baseline`: AP@100 0.0, AP@150 0.30, recall@500 25.0, MPJPE
+    543.01 mm.
+  These support the core claim on the lightweight synthetic substitute.
 
 ## Remaining
 
-- Confirm the full pipeline runs inside the compute container.
-- If the retry job validates successfully, update the milestone to
-  `core_claim` because COMPOSE clearly improves over the pairwise association
-  baseline while maintaining full 500 mm recall on the synthetic substitute.
 - Expand beyond the minimum by adding another synthetic condition or a real
   lightweight benchmark subset if time remains.
+- Higher milestones remain open: reproduce additional dataset conditions,
+  compare more baselines, and move from synthetic detections to a real
+  multi-view benchmark subset.
 
 ## Issues
 

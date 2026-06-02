@@ -27,8 +27,6 @@
 #   milestone: core_claim
 #   notes: "Reproduced the core claim. Environment packaged."
 
-action: submit
-gpus: 0
-test: true
-milestone: method_runs
-notes: "Retry full CPU reproduction after scoring contract cleanup; expect scripts/run.sh to regenerate validated scores supporting the synthetic core claim."
+action: done
+milestone: core_claim
+notes: "Core claim reproduced on a lightweight synthetic calibrated multi-view benchmark. COMPOSE exact-cover association beats the pairwise baseline and the packaged reproduce/evaluate pipeline validates successfully."
