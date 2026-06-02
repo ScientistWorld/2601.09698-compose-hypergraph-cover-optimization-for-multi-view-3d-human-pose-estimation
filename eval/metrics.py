@@ -231,8 +231,11 @@ def evaluate_pose_predictions(
     all_frame_gts: list[list[PoseRecord]] = []
     mpjpe_values = []
     recall_matches = 0
+    precision_matches_150mm = 0
     total_gt = 0
     total_predictions = 0
+    pose_count_abs_errors = []
+    gt_copy_predictions = 0
 
     for frame_id, data_frame in data_frames:
         pred_frame = pred_frames.get(frame_id, {})
@@ -256,15 +259,29 @@ def evaluate_pose_predictions(
         all_frame_preds.append(preds)
         total_gt += len(gts)
         total_predictions += len(preds)
+        pose_count_abs_errors.append(abs(len(preds) - len(gts)))
 
         distances = distance_matrix(preds, gts)
         for _, _, dist in greedy_min_error_matches(distances):
             mpjpe_values.append(dist)
         recall_matches += len(greedy_min_error_matches(distances, max_error=recall_threshold_mm))
+        precision_matches_150mm += len(greedy_min_error_matches(distances, max_error=150.0))
+        gt_copy_predictions += sum(
+            1
+            for row in distances
+            if any(math.isfinite(dist) and dist <= 1e-9 for dist in row)
+        )
 
     metrics: dict[str, Any] = {
         "mpjpe_mm": (sum(mpjpe_values) / len(mpjpe_values)) if mpjpe_values else None,
         "recall_500mm": float(100.0 * recall_matches / total_gt) if total_gt else 0.0,
+        "precision_150mm": float(100.0 * precision_matches_150mm / total_predictions)
+        if total_predictions
+        else 0.0,
+        "pose_count_mae": float(sum(pose_count_abs_errors) / len(pose_count_abs_errors))
+        if pose_count_abs_errors
+        else 0.0,
+        "gt_copy_rate": float(100.0 * gt_copy_predictions / total_predictions) if total_predictions else 0.0,
     }
 
     for threshold in thresholds_mm:

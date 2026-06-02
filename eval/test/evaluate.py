@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -17,7 +18,7 @@ except ModuleNotFoundError:
 
 
 SLICE_NAME = "test"
-SPLIT_DESCRIPTION = "Odd-indexed scenes from the synthetic COMPOSE evaluation set."
+SPLIT_DESCRIPTION = "Held-out hash-stratified scenes balanced across crossing and non-crossing phases."
 
 
 def parse_args() -> argparse.Namespace:
@@ -36,14 +37,40 @@ def load_json(path: str) -> Any:
         return json.load(handle)
 
 
-def split_frame_ids(data_payload: Any) -> list[str]:
+def frame_entries(data_payload: Any) -> list[tuple[int, str]]:
     if isinstance(data_payload, dict) and isinstance(data_payload.get("scenes"), list):
-        return [str(scene["scene_id"]) for idx, scene in enumerate(data_payload["scenes"]) if idx % 2 == 1]
+        return [(idx, str(scene["scene_id"])) for idx, scene in enumerate(data_payload["scenes"])]
     if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), list):
-        return [str(frame.get("frame_id", frame.get("id", idx))) for idx, frame in enumerate(data_payload["frames"]) if idx % 2 == 1]
+        return [
+            (idx, str(frame.get("frame_id", frame.get("id", idx))))
+            for idx, frame in enumerate(data_payload["frames"])
+        ]
     if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), dict):
-        return [str(frame_id) for idx, frame_id in enumerate(sorted(data_payload["frames"])) if idx % 2 == 1]
+        return [(idx, str(frame_id)) for idx, frame_id in enumerate(sorted(data_payload["frames"]))]
     raise ValueError("Train/test slicing expects a data payload with scenes or frames.")
+
+
+def split_frame_ids(data_payload: Any) -> list[str]:
+    entries = frame_entries(data_payload)
+    if not entries:
+        return []
+
+    midpoint = (len(entries) - 1) / 2.0
+    crossing_radius = max(1.0, len(entries) * 0.18)
+    buckets: dict[str, list[tuple[int, str]]] = {"crossing": [], "non_crossing": []}
+    for idx, frame_id in entries:
+        bucket = "crossing" if abs(idx - midpoint) <= crossing_radius else "non_crossing"
+        buckets[bucket].append((idx, frame_id))
+
+    selected: list[str] = []
+    for bucket_entries in buckets.values():
+        ordered = sorted(
+            bucket_entries,
+            key=lambda item: hashlib.sha256(f"compose-split:{item[1]}".encode("utf-8")).hexdigest(),
+        )
+        selected.extend(frame_id for pos, (_, frame_id) in enumerate(ordered) if pos % 2 == 1)
+    selected_set = set(selected)
+    return [frame_id for _, frame_id in entries if frame_id in selected_set]
 
 
 def filter_data_payload(data_payload: Any, keep_ids: set[str]) -> Any:

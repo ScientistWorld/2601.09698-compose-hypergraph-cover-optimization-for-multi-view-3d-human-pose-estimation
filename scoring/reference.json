@@ -5,12 +5,51 @@
       "weight": 1.0,
       "primary_metric": "ap_150mm",
       "metrics": {
-        "ap_25mm": {"higher_is_better": true, "coefficient": 0.5},
-        "ap_50mm": {"higher_is_better": true, "coefficient": 0.5},
-        "ap_100mm": {"higher_is_better": true, "coefficient": 0.5},
-        "ap_150mm": {"higher_is_better": true, "coefficient": 1.0},
-        "recall_500mm": {"higher_is_better": true, "coefficient": 0.2},
-        "mpjpe_mm": {"higher_is_better": false, "coefficient": -0.5}
+        "ap_25mm": {
+          "higher_is_better": true,
+          "coefficient": 0.4,
+          "description": "Average precision for very strict 25 mm pose localization."
+        },
+        "ap_50mm": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Average precision for strict 50 mm pose localization."
+        },
+        "ap_100mm": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Average precision for moderate 100 mm pose localization."
+        },
+        "ap_150mm": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Headline average precision at the paper's 150 mm pose localization threshold."
+        },
+        "precision_150mm": {
+          "higher_is_better": true,
+          "coefficient": 0.4,
+          "description": "Fraction of emitted poses that match a ground-truth person within 150 mm, penalizing over-generation."
+        },
+        "recall_500mm": {
+          "higher_is_better": true,
+          "coefficient": 0.25,
+          "description": "Fraction of ground-truth people recovered within the paper's loose 500 mm recall threshold."
+        },
+        "mpjpe_mm": {
+          "higher_is_better": false,
+          "coefficient": -0.5,
+          "description": "Mean per-joint position error for greedily matched predicted poses."
+        },
+        "pose_count_mae": {
+          "higher_is_better": false,
+          "coefficient": -0.3,
+          "description": "Mean absolute per-frame difference between the number of predicted and ground-truth people."
+        },
+        "gt_copy_rate": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Percentage of predictions that exactly copy a ground-truth pose, catching label-leakage shortcuts."
+        }
       },
       "results": {
         "pairwise_baseline": {
