@@ -66,12 +66,10 @@
 
 - Expand beyond the minimum by adding Shelf/Campus-style settings or another
   real-data subset if more budget is available.
-- Higher milestones remain open until the submitted extension job finishes:
-  `scripts/reproduce_plus.sh` now defines a three-camera, three-person
-  Panoptic-sample stress setting that will write `scoring/scores_stress.json`.
-- After that job succeeds, check whether COMPOSE still improves over the
-  pairwise baseline on AP@150, recall@500, and MPJPE before marking
-  `core_claim_plus`.
+- Higher milestones remain open. The final verified gym intentionally scores
+  only `cmu_panoptic_main`, because the sparse-view stress extension drafted in
+  a later iteration was not completed by a job and is not part of
+  `scoring/scores.json`.
 
 ## Issues
 
@@ -101,9 +99,9 @@
 - Final verification issue about stale synthetic score artifacts was resolved
   by job `265894a0-2ac`, which regenerated scores on the current
   Panoptic-derived default dataset.
-- Current turn added `--camera-nodes` to `data/panoptic_sample_compose.py` and
-  `scripts/reproduce_plus.sh` to run a sparse-view stress extension. Results
-  are pending the next CPU job.
+- Final verification removed the unverified sparse-view stress extension from
+  the standard run path and experiment overview so documented experiments match
+  the validated score artifacts.
 
 ## Deviations from Paper
 

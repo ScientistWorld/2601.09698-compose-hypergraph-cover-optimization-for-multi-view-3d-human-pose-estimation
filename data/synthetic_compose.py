@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic synthetic multi-view pose data for COMPOSE-style evaluation."""
+"""Deterministic synthetic multi-view pose data for association evaluation."""
 
 from __future__ import annotations
 

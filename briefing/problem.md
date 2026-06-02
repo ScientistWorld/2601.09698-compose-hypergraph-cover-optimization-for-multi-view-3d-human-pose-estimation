@@ -1,9 +1,5 @@
 # Problem Definition
 
-What problem does this paper address? Write this so that someone with no knowledge of the paper can understand what needs to be solved and how success is measured.
-
-Do NOT describe the paper's method or solution here — only the problem itself. Think about if a future scientist agent try to solve this problem from scratch without knowing what approach the paper took. If you leak the solution, you compromise the benchmark.
-
 ## Research Question
 
 How can a system recover accurate 3D poses for multiple people from a small set
@@ -19,7 +15,7 @@ unreliable.
 
 ## Success Criteria
 
-A successful solver should associate detections belonging to the same physical
-person across cameras, reconstruct each person's 3D joints in the global camera
-coordinate frame, tolerate missed or spurious 2D detections, and avoid requiring
-3D supervision at evaluation time.
+A successful system should group 2D observations that belong to the same
+physical person across cameras, reconstruct each person's 3D joints in the
+global camera coordinate frame, tolerate missed or spurious 2D detections, and
+avoid using ground-truth identities or 3D poses when forming predictions.

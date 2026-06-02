@@ -8,15 +8,15 @@ robustly enough to triangulate accurate 3D poses without 3D supervised
 training.
 
 ## Core Contribution
-Work should improve the multi-view correspondence and geometric reconstruction
-stage. The relevant family is optimization- or geometry-driven association of
-2D detections across cameras, followed by 3D pose reconstruction.
+Work should improve cross-view association and 3D reconstruction from
+calibrated 2D detections without using 3D supervised training labels at
+prediction time. The relevant family is geometry-aware multi-view reasoning,
+not fully supervised image-to-3D regression.
 
 ## Approach Scope
-Improvements may change candidate generation, geometric scoring, pruning,
-global assignment objectives, solver strategy, confidence calibration, and
-handling of missing or spurious detections. The method must still solve the
-same multi-view association problem from the provided detections and camera
+Improvements may change how detections are compared, grouped, scored,
+reconstructed, filtered, and calibrated. The method must still solve the same
+multi-view association problem from the provided detections and camera
 calibration.
 
 ## Out of Bounds

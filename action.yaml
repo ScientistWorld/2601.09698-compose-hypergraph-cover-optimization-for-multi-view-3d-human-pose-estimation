@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
+action: done
 milestone: core_claim
-notes: "Run the validated core COMPOSE reproduction plus a new sparse 3-view, 3-person Panoptic-sample stress extension. If the stress scores support the same advantage over the pairwise baseline, promote to core_claim_plus next turn."
+notes: "Final verification passed: validated the core COMPOSE gym, cleaned method-agnostic docs, and removed the unverified stress extension from the standard flow."

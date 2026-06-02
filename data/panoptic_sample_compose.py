@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a lightweight COMPOSE benchmark from the CMU Panoptic sample.
+"""Build a lightweight multi-view 3D pose benchmark from the CMU Panoptic sample.
 
 The official ``171204_pose1_sample`` release contains calibrated HD cameras
 and one tracked 3D body.  To keep the correspondence problem multi-person

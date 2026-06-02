@@ -30,6 +30,6 @@
 - `python validate.py --compare` passed after the regenerated train/test score artifacts used `panoptic_sample_*` scene IDs.
 
 ### [2026-06-02 04:55] - core_claim
-- Added a pending `core_claim_plus` stress setting with three CMU Panoptic sample cameras, three augmented people, higher noise, more misses, and more outliers.
-- Extended the Panoptic sample builder with configurable camera-node subsets while keeping the COMPOSE hypergraph exact-cover method unchanged.
-- Submitting a CPU test job to run the existing core reproduction plus the new stress setting; milestone remains `core_claim` until results are available.
+- Final verification kept the milestone at `core_claim`.
+- Removed an unverified sparse-view stress extension from the standard run path and method-agnostic experiment overview so documented experiments match `scoring/scores.json`.
+- Re-ran `python validate.py --compare`; scoring and structural checks pass.
