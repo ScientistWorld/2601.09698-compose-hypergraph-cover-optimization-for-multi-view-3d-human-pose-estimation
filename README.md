@@ -24,10 +24,6 @@ baseline MvPose while remaining training-free.
 
 # Problem Definition
 
-What problem does this paper address? Write this so that someone with no knowledge of the paper can understand what needs to be solved and how success is measured.
-
-Do NOT describe the paper's method or solution here — only the problem itself. Think about if a future scientist agent try to solve this problem from scratch without knowing what approach the paper took. If you leak the solution, you compromise the benchmark.
-
 ## Research Question
 
 How can a system recover accurate 3D poses for multiple people from a small set
@@ -43,10 +39,10 @@ unreliable.
 
 ## Success Criteria
 
-A successful solver should associate detections belonging to the same physical
-person across cameras, reconstruct each person's 3D joints in the global camera
-coordinate frame, tolerate missed or spurious 2D detections, and avoid requiring
-3D supervision at evaluation time.
+A successful system should group 2D observations that belong to the same
+physical person across cameras, reconstruct each person's 3D joints in the
+global camera coordinate frame, tolerate missed or spurious 2D detections, and
+avoid using ground-truth identities or 3D poses when forming predictions.
 
 ---
 
@@ -82,8 +78,6 @@ standard calibrated multi-view datasets.
 
 # Evaluation
 
-How success is measured. Describe only the metrics, targets, and evaluation procedure — do NOT describe the paper's method or how they achieved these results. Think of this as a general evaluation protocal for other scientists trying to solve the same problem, where they should not see this paper's solution.
-
 ## Metrics
 
 Predicted 3D poses are greedily matched to ground-truth poses per frame by
@@ -101,19 +95,19 @@ minimum mean per-joint position error (MPJPE). The benchmark reports:
 ## Baselines and Targets
 
 The paper's main reported optimization-based baseline on CMU Panoptic is MvPose
-using the same 2D keypoint detector. The target method improves AP at strict
-thresholds and lowers MPJPE relative to that baseline. The runnable reproduction
-also includes a simple pairwise triangulation baseline to verify that global
-multi-view association is nontrivial on the lightweight benchmark.
+using the same 2D keypoint detector. The benchmark should reward higher AP and
+recall, lower MPJPE, and a reasonable number of emitted poses. The runnable
+environment also includes a simple pairwise triangulation baseline to verify
+that cross-view association remains nontrivial on the lightweight benchmark.
 
 ## Evaluation Protocol
 
 Run a method to write predictions as JSON, then call `scripts/evaluate.sh`.
 Evaluation code in `eval/` reads only prediction artifacts and the benchmark
-data; it does not import or rerun code from `method/`. The paper evaluates CMU
-Panoptic with five cameras and reports AP, recall, and MPJPE. This environment
-uses a deterministic CMU Panoptic sample-derived benchmark with official
-camera calibration and skeleton poses, plus generated noisy/missing/spurious 2D
+data; it does not import or rerun method code. The paper evaluates CMU Panoptic
+with five cameras and reports AP, recall, and MPJPE. This environment uses a
+deterministic CMU Panoptic sample-derived benchmark with official camera
+calibration and skeleton poses, plus generated noisy/missing/spurious 2D
 detections, to preserve the same output and metric structure at lightweight
 scale.
 
@@ -339,6 +333,46 @@ scale.
 - CPU verification job `265894a0-2ac` regenerated predictions and scores on the Panoptic-derived benchmark.
 - COMPOSE achieved AP@150 83.57, recall@500 100.0, and MPJPE 69.26 mm versus the pairwise baseline AP@150 12.47, recall@500 34.03, and MPJPE 443.72 mm.
 - `python validate.py --compare` passed after the regenerated train/test score artifacts used `panoptic_sample_*` scene IDs.
+
+</details>
+
+### Iteration 9: gpt-5.5 (verifier)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 7m | **GPU**: 0.0h
+- **Jobs**: 5 total (3 completed, 2 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-06-02 00:00] - method_runs
+- Implemented COMPOSE's actual hypergraph formulation: DLT triangulation for candidate hyperedges, reprojection-error pruning, exponential hyperedge scoring, and weighted exact-cover ILP with singleton detections.
+- Added a deterministic calibrated multi-view synthetic benchmark with noisy, missing, and outlier 2D detections.
+- Added a pairwise association baseline and artifact-based evaluator that does not import from `method/`.
+
+### [2026-06-02 00:00] - core_claim
+- Ran the packaged reproduction on the synthetic substitute benchmark.
+- COMPOSE substantially outperformed the pairwise baseline on AP@150, recall@500, and MPJPE while preserving the paper's optimization pipeline.
+- `python validate.py --compare` passes with the reproduced score artifacts.
+
+### [2026-06-02 04:15] - core_claim
+- Continuing-agent audit confirmed `method/compose.py` implements the paper's actual hypergraph exact-cover algorithm rather than a surrogate.
+- Confirmed `eval/` is artifact-based and independent from `method/`; `scripts/evaluate.sh` works through `eval/evaluate_predictions.py`.
+- Re-ran `python validate.py --compare`; scoring and structural checks pass.
+
+### [2026-06-02 04:36] - core_claim
+- Added a CMU Panoptic sample-derived benchmark builder using official calibration and skeleton assets.
+- Updated default scripts to regenerate and score the Panoptic-derived benchmark instead of only rescoring existing synthetic artifacts.
+- Submitting a CPU smoke job to validate the upgraded benchmark path before claiming any higher milestone.
+
+### [2026-06-02 04:40] - core_claim
+- CPU verification job `265894a0-2ac` regenerated predictions and scores on the Panoptic-derived benchmark.
+- COMPOSE achieved AP@150 83.57, recall@500 100.0, and MPJPE 69.26 mm versus the pairwise baseline AP@150 12.47, recall@500 34.03, and MPJPE 443.72 mm.
+- `python validate.py --compare` passed after the regenerated train/test score artifacts used `panoptic_sample_*` scene IDs.
+
+### [2026-06-02 04:55] - core_claim
+- Final verification kept the milestone at `core_claim`.
+- Removed an unverified sparse-view stress extension from the standard run path and method-agnostic experiment overview so documented experiments match `scoring/scores.json`.
+- Re-ran `python validate.py --compare`; scoring and structural checks pass.
 
 </details>
 
