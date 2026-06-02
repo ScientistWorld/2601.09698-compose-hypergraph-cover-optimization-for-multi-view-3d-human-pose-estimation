@@ -15,6 +15,9 @@
 - The full CPU reproduction job `faa8138c-d63` completed successfully:
   `scripts/reproduce.sh` regenerated predictions/scores and
   `python validate.py --compare` passed.
+- Current milestone is `core_claim`: the proposed hypergraph exact-cover
+  method beats the pairwise association baseline on the scored nontrivial
+  synthetic benchmark while maintaining full recovery recall.
 
 ## Results
 
@@ -40,7 +43,7 @@
 ## Remaining
 
 - Expand beyond the minimum by adding another synthetic condition or a real
-  lightweight benchmark subset if time remains.
+  lightweight benchmark subset.
 - Higher milestones remain open: reproduce additional dataset conditions,
   compare more baselines, and move from synthetic detections to a real
   multi-view benchmark subset.
