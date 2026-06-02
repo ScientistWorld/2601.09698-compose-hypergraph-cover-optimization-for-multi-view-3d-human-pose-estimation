@@ -5,4 +5,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Hash-stratified 12/12 disjoint frame split; 18 train metric values and 18 test metric values for compose plus pairwise_baseline; compose AP@150 train/test 78.95/70.09 and precision@150 45.61/44.44; AP@25 is reported but zero-weighted after saturated-floor runtime signal."
+notes: "Packaging audit passed: tracked synthetic dataset is self-contained, download.sh regenerates it if missing, and no shared/ or external artifact path fixes were needed."
