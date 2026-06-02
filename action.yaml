@@ -1,8 +1,8 @@
-# Run split evaluation on the compute node, then stop.
+# Split evaluation is complete; end this design phase.
 # Do NOT sleep, poll, or wait. The system reads this file
 # only after your turn ends.
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run evaluate_{train,test}.sh against discovered final prediction artifacts; populate split scores for inspection."
+notes: "Hash-stratified 12/12 disjoint frame split; 18 train metric values and 18 test metric values for compose plus pairwise_baseline; compose AP@150 train/test 78.95/70.09 and precision@150 45.61/44.44; AP@25 is reported but zero-weighted after saturated-floor runtime signal."

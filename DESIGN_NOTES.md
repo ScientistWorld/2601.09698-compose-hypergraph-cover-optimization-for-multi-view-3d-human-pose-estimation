@@ -24,6 +24,7 @@
 ## Remaining Runtime Concerns
 
 - The benchmark data file includes ground-truth poses because the original reproduction dataset is tracked. `gt_copy_rate` should expose exact label-copying, but it will not catch a method that reads ground truth and adds tiny noise. A stronger future iteration would need a truly hidden test data file or a stricter leakage policy around method inputs.
-- The new stratified split should be verified by the runner iteration to ensure train/test frame counts and difficulty are close on the actual generated dataset. This pass did not run evaluators or produce scores by instruction.
+- Runtime verification job `0033bd13-442` produced complete train/test scores for `compose` and `pairwise_baseline` with 12 disjoint frames per slice and matching method sets. The primary `compose` AP@150mm is 78.95 on train and 70.09 on test; precision@150mm is 45.61 on train and 44.44 on test.
+- `ap_25mm` saturated at 0.0 for every scored method on both slices, so it remains reported but now has zero scoring coefficient in `scoring/reference.json`. The usable benefit signal comes from AP@50/100/150, precision@150, recall@500, and MPJPE.
 - `gt_copy_rate` uses a near-exact MPJPE threshold of `1e-9` after unit scaling. This is intended as a label-copy sentinel, not a general accuracy metric.
 - `precision_150mm` and `pose_count_mae` are expected to be useful anti-shortcut constraints, but the next runner should watch for saturation if all submitted methods naturally emit exactly two poses per frame on this synthetic benchmark.
