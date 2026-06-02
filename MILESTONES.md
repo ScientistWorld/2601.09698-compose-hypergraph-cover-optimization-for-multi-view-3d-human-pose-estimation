@@ -15,7 +15,11 @@
 
 ## Progress Log
 
-<!-- Write your progress here -->
+### [2026-06-02 03:58] - none
+- Read the paper and identified COMPOSE as a hypergraph weighted exact-cover method for multi-view 3D human pose correspondence.
+- Implemented the actual method structure in `method/compose.py`: DLT triangulation, reprojection-cost scoring, geometric pruning, singleton fallback edges, and PuLP ILP exact cover.
+- Added a deterministic synthetic calibrated multi-view benchmark and reusable evaluator; static validation passes.
+- Submitted a CPU smoke job to verify the packaged pipeline end to end before claiming `method_runs`.
 
 ## Stop Justification
-- Completed at milestone `none`.
+- Not stopped; first execution job pending.

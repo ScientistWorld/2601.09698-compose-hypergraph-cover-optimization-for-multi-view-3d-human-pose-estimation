@@ -4,12 +4,30 @@ How success is measured. Describe only the metrics, targets, and evaluation proc
 
 ## Metrics
 
-<!-- What metrics are used? How are they computed? What does higher/lower mean? -->
+Predicted 3D poses are greedily matched to ground-truth poses per frame by
+minimum mean per-joint position error (MPJPE). The benchmark reports:
+
+- `ap_25mm`, `ap_50mm`, `ap_100mm`, `ap_150mm`: pose average precision at the
+  corresponding MPJPE threshold; higher is better.
+- `recall_500mm`: fraction of ground-truth people matched by any prediction
+  within 500 mm; higher is better.
+- `mpjpe_mm`: mean matched per-joint error in millimeters; lower is better.
+- `num_predictions` and `num_ground_truth`: accounting metrics to expose
+  missed or over-produced poses.
 
 ## Baselines and Targets
 
-<!-- What performance levels exist as reference points? Include the paper's reported numbers as targets, and any standard baselines. A scientist agent should know what "good" looks like. -->
+The paper's main reported optimization-based baseline on CMU Panoptic is MvPose
+using the same 2D keypoint detector. The target method improves AP at strict
+thresholds and lowers MPJPE relative to that baseline. The runnable reproduction
+also includes a simple pairwise triangulation baseline to verify that global
+multi-view association is nontrivial on the synthetic benchmark.
 
 ## Evaluation Protocol
 
-<!-- How should evaluation be run? What data split, what conditions? Any important details about how to compare fairly (e.g., fixed seeds, specific test sets, averaging over runs). -->
+Run a method to write predictions as JSON, then call `scripts/evaluate.sh`.
+Evaluation code in `eval/` reads only prediction artifacts and the benchmark
+data; it does not import or rerun code from `method/`. The paper evaluates CMU
+Panoptic with five cameras and reports AP, recall, and MPJPE. This environment
+uses a deterministic calibrated synthetic substitute with the same output and
+metric structure for lightweight reproducibility.

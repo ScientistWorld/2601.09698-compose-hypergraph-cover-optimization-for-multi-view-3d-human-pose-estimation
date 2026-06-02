@@ -26,5 +26,15 @@ cd /home/user
 
 mkdir -p scoring
 
-# TODO: implement evaluation using code in eval/
-# Must write scoring/scores.json at the end
+METHOD_NAME="${1:-compose}"
+PREDICTIONS="${2:-checkpoints/${METHOD_NAME}_predictions.json}"
+DATA="${3:-data/synthetic_compose_dataset.json}"
+EXPERIMENT="${4:-cmu_panoptic_main}"
+
+python eval/evaluate_predictions.py \
+  --predictions "$PREDICTIONS" \
+  --data "$DATA" \
+  --output scoring/scores.json \
+  --experiment "$EXPERIMENT" \
+  --method-name "$METHOD_NAME" \
+  --unit-scale 1000

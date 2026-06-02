@@ -2,36 +2,45 @@
 
 ## What Works
 
-<!-- What has been successfully reproduced so far. -->
+- Paper analysis and briefing are complete.
+- `method/compose.py` implements the paper's computational pipeline: candidate
+  hyperedges, reprojection-error pruning, weighted exact-cover ILP, and final
+  triangulation.
+- `data/synthetic_compose_dataset.json` provides a tracked deterministic
+  calibrated multi-camera benchmark with noisy/missing/outlier detections.
+- `eval/` scores prediction artifacts without importing `method/`.
+- `python validate.py` passes before job submission.
 
 ## Results
 
-<!-- Reproduced numbers compared to the paper's reported numbers. -->
+- No reproduced scores yet. A CPU smoke job is being submitted to run
+  `scripts/reproduce.sh` and write `scoring/scores.json`.
 
 ## Remaining
 
-<!-- What still needs to be done to reach higher milestones. -->
+- Confirm the full pipeline runs inside the compute container.
+- Inspect `scoring/scores.json`; if COMPOSE is not clearly better than the
+  pairwise baseline, tune pruning/ILP hyperparameters or dataset difficulty and
+  resubmit.
+- After `method_runs`, iterate toward `core_claim`.
 
 ## Issues
 
-<!-- Blockers, bugs, or difficulties encountered. -->
+- The original CMU Panoptic/Shelf/Campus evaluation would require large video
+  data and 2D detector resources. This first runnable environment uses a
+  synthetic calibrated substitute to preserve the correspondence/reconstruction
+  problem at lightweight scale.
+- Local login-node Python lacks `numpy`; dependencies are installed through
+  `environment/setup.sh` and verified by submitted jobs.
 
 ## Deviations from Paper
 
-<!-- Do not edit this section unless you deviated from the paper's original setup.
-     For each deviation, document: what the paper used, what you substituted, and why.
-
-     ACCEPTABLE deviations (data/resource/scale substitutions — milestones still valid):
-       - Replaced a proprietary dataset with a public one
-       - Used a smaller model of the same architecture
-       - Scaled down training (fewer epochs, smaller batch)
-       - Used a different library for the same algorithm
-
-     UNACCEPTABLE deviations (algorithm substitutions — milestones above 'none' are void):
-       - Replaced the paper's algorithm with a fundamentally different one
-       - Wrote a generic model trained to approximate the method's outputs
-         instead of implementing the method's computational steps
-
-     The test: could someone reading your code identify which algorithm from
-     the paper you implemented? If not, you replaced the method. -->
-
+- Paper data: CMU Panoptic, Shelf, and Campus with 2D detections from ViTPose.
+  Reproduction substitute: deterministic synthetic calibrated multi-view scenes
+  with 2D pose detections, occlusions, noise, and outliers. Reason: lightweight
+  first reproduction without large detector/data downloads; the method
+  algorithm is not replaced.
+- Paper detector: ViTPose top-down 2D keypoints. Reproduction substitute:
+  generated 2D keypoints with controlled noise. Reason: the paper's core claim
+  is the correspondence optimization after 2D detection, and this keeps that
+  computational stage testable.

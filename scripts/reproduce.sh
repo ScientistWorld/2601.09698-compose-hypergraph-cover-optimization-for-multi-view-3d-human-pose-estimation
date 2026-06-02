@@ -18,7 +18,8 @@ set -e
 
 cd /home/user
 
-# TODO: implement full reproduction pipeline
-# e.g.:
-#   bash scripts/baseline.sh
-#   bash scripts/method.sh
+rm -f scoring/scores.json
+
+bash scripts/download.sh
+bash scripts/baseline.sh pairwise_baseline data/synthetic_compose_dataset.json checkpoints/pairwise_baseline_predictions.json
+bash scripts/method.sh data/synthetic_compose_dataset.json checkpoints/compose_predictions.json

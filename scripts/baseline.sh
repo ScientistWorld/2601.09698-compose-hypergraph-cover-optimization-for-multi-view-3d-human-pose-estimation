@@ -17,4 +17,16 @@ set -e
 
 cd /home/user
 
-# TODO: run baseline
+NAME="${1:-pairwise_baseline}"
+DATA="${2:-data/synthetic_compose_dataset.json}"
+OUTPUT="${3:-checkpoints/${NAME}_predictions.json}"
+
+mkdir -p checkpoints
+
+python baseline/pairwise_baseline.py \
+  --data "$DATA" \
+  --output "$OUTPUT" \
+  --reprojection-threshold 25 \
+  --min-views 2
+
+bash scripts/evaluate.sh "$NAME" "$OUTPUT" "$DATA" cmu_panoptic_main
