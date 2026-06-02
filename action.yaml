@@ -1,5 +1,8 @@
-action: done
-gpus: 0
+# IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends. Sleeping blocks the entire pipeline.
+action: pending
+gpus: 1
 test: false
-milestone: core_claim
-notes: "Continuation audit restored core_claim. COMPOSE implements the paper's hypergraph exact-cover method, eval is independent, and validate.py --compare passes with COMPOSE outperforming the pairwise baseline on the packaged synthetic benchmark."
+milestone: method_runs
+notes: ""
