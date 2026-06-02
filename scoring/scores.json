@@ -1,0 +1,32 @@
+{
+  "experiments": {
+    "cmu_panoptic_main": {
+      "results": {
+        "compose": {
+          "ap_100mm": 46.53540165917835,
+          "ap_150mm": 72.68276866358198,
+          "ap_25mm": 0.0,
+          "ap_50mm": 25.857404799356352,
+          "mpjpe_mm": 64.21330867880224,
+          "num_frames": 24,
+          "num_ground_truth": 56,
+          "num_matched_for_mpjpe": 56,
+          "num_predictions": 120,
+          "recall_500mm": 100.0
+        },
+        "pairwise_baseline": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.2976190476190476,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 543.0123086494222,
+          "num_frames": 24,
+          "num_ground_truth": 56,
+          "num_matched_for_mpjpe": 28,
+          "num_predictions": 28,
+          "recall_500mm": 25.0
+        }
+      }
+    }
+  }
+}
