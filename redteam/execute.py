@@ -75,7 +75,18 @@ def original_data():
 
 
 def original_predictions():
-    return read(RED / 'reference' / 'predictions.json')
+    cache = RED / 'reference' / 'predictions.json'
+    if not cache.exists():
+        match = next((x for x in read(STATE/'manifest.json') if x['path'] ==
+                      'checkpoints/compose_predictions.json'), None)
+        if match:
+            shutil.copy2(STATE/match['backup'], cache)
+        else:
+            run = command([sys.executable, 'method/compose.py', '--data', str(DATA),
+                           '--output', str(cache)], RED/'reference/run.log')
+            if run['exit_code']:
+                raise RuntimeError('Cannot generate reference artifact')
+    return read(cache)
 
 
 def as_frames(payload):
@@ -149,11 +160,11 @@ def stronger(out, data):
             candidates.append({'config': payload['config'], 'train_metrics': metrics, 'train_utility': utility})
             if best is None or utility > best[0]:
                 best = (utility, payload)
-    write(out.parent/'train_selection.json', candidates)
+    write(RED/'quality_stronger/train_selection.json', candidates)
     write(out, best[1])
 
 
-def brute_force(out, data):
+def brute_force(out, data, pruned=False):
     from functools import lru_cache
     mod = load_module('compose_audit_bruteforce', ROOT/'method/compose.py')
     norm = mod.normalize_dataset(data)
@@ -162,6 +173,10 @@ def brute_force(out, data):
     for f in norm['frames']:
         start = time.monotonic()
         edges = mod.enumerate_hyperedges(f['detections'], pmats, math.inf, .003, .03)
+        enumerated = len(edges)
+        if pruned:
+            # Still instantiate every combination; exhaustive subset search replaces ILP.
+            edges = [e for e in edges if len(e.refs) == 1 or e.cost <= 900]
         nodes = sorted({(r.view, r.index) for e in edges for r in e.refs})
         bits = {n: 1 << i for i, n in enumerate(nodes)}
         masks = [sum(bits[(r.view, r.index)] for r in e.refs) for e in edges]
@@ -182,12 +197,12 @@ def brute_force(out, data):
                     best = (value, (i, *indices))
             return best
         value, selected = search((1 << len(nodes)) - 1)
-        frames.append(emit_selected(mod, f, edges, selected))
-        stats.append({'frame': f['frame_id'], 'candidates': len(edges), 'detections': len(nodes),
+        frames.append(emit_selected(mod, f, edges, sorted(selected)))
+        stats.append({'frame': f['frame_id'], 'candidates': enumerated, 'retained_candidates': len(edges), 'detections': len(nodes),
                       'memo_states': search.cache_info().currsize, 'objective': value,
                       'seconds_including_geometry': time.monotonic()-start})
     write(out, {'frames': frames})
-    write(out.parent/'enumeration_stats.json', stats)
+    write(RED/('shortcut_bruteforce_pruned' if pruned else 'shortcut_bruteforce')/'enumeration_stats.json', stats)
 
 
 def build_case(name, out, data):
@@ -196,11 +211,16 @@ def build_case(name, out, data):
         seed = int(name.rsplit('_', 1)[1])
         env = dict(os.environ, PYTHONHASHSEED=str(seed))
         details['method_run'] = command([sys.executable, 'redteam/seed_run.py', str(seed), '--data', str(DATA),
-                                        '--output', str(out)], out.parent/'run.log', env=env)
+                                        '--output', str(out)], RED/name/'run.log', env=env)
         if details['method_run']['exit_code']:
             raise RuntimeError('reference run failed')
     elif name == 'quality_stronger':
         stronger(out, data)
+    elif name == 'quality_no_higher_order':
+        mod = load_module('compose_audit_pair_only', ROOT/'method/compose.py')
+        norm = mod.normalize_dataset(data)
+        frames = [mod.run_frame(f, norm['cameras'], 900, .003, .06, .03, 2) for f in norm['frames']]
+        write(out, {'frames': frames, 'config': {'cameras': 5, 'max_views': 2}})
     elif name == 'quality_weaker':
         mod = load_module('compose_audit_weaker', ROOT/'method/compose.py')
         norm = mod.normalize_dataset(data)
@@ -213,9 +233,9 @@ def build_case(name, out, data):
     elif name == 'pairwise_baseline':
         details['method_run'] = command([sys.executable, 'baseline/pairwise_baseline.py', '--data', str(DATA),
                                         '--output', str(out), '--reprojection-threshold', '25', '--min-views', '2'],
-                                       out.parent/'run.log')
-    elif name == 'shortcut_bruteforce':
-        brute_force(out, data)
+                                       RED/name/'run.log')
+    elif name in ('shortcut_bruteforce', 'shortcut_bruteforce_pruned'):
+        brute_force(out, data, pruned=name.endswith('_pruned'))
     elif name in ('shortcut_labels_jitter', 'shortcut_exact_labels'):
         write(out, pose_payload(data, offset=0.0 if name == 'shortcut_exact_labels' else 1e-5))
     elif name == 'shortcut_generator_rebuild':
@@ -267,7 +287,39 @@ def build_case(name, out, data):
             if best is None or utility > best[0]:
                 best = (utility, trial, joint)
         details['kept_joint'] = best[2]
-        write(out.parent/'train_selection.json', candidates)
+        write(RED/name/'train_selection.json', candidates)
+        write(out, best[1])
+    elif name == 'shortcut_partial_pose':
+        # Rank joint subsets using only the public train slice, then omit the others.
+        # This shortcut changes completeness, never improves any predicted coordinate.
+        payload = original_predictions()
+        num_joints = len(data['task']['joint_names'])
+        single = []
+        for joint in range(num_joints):
+            trial = copy.deepcopy(payload)
+            for f in as_frames(trial):
+                for p in f['predicted_poses']:
+                    p['joints_3d'] = [j if i == joint else [math.nan]*3
+                                      for i, j in enumerate(p['joints_3d'])]
+            m = train_eval(trial, data)
+            single.append((m['ap_150mm'] + .5*m['ap_100mm'] + .5*m['ap_50mm']
+                           + .4*m['precision_150mm'], joint))
+        order = [j for _, j in sorted(single, reverse=True)]
+        candidates, best = [], None
+        for count in range(1, num_joints):
+            trial = copy.deepcopy(payload)
+            keep = set(order[:count])
+            for f in as_frames(trial):
+                for p in f['predicted_poses']:
+                    p['joints_3d'] = [j if i in keep else [math.nan]*3
+                                      for i, j in enumerate(p['joints_3d'])]
+            m = train_eval(trial, data)
+            utility = m['ap_150mm'] + .5*m['ap_100mm'] + .5*m['ap_50mm'] + .4*m['precision_150mm']
+            candidates.append({'kept_joints': sorted(keep), 'train_metrics': m, 'train_utility': utility})
+            if best is None or utility > best[0]:
+                best = (utility, trial, sorted(keep))
+        details['kept_joints'] = best[2]
+        write(RED/name/'train_selection.json', candidates)
         write(out, best[1])
     elif name == 'shortcut_truncated_joints':
         payload = original_predictions()
