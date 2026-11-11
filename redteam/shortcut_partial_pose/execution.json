@@ -1,0 +1,28 @@
+{
+  "scenario": "shortcut_partial_pose",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "kept_joints": [
+    0,
+    1,
+    15,
+    16,
+    17,
+    18
+  ],
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.8929985229915474
+  },
+  "artifacts_before_test": [
+    "shortcut_partial_pose_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.4820210070174653
+  },
+  "scored_methods": [
+    "shortcut_partial_pose"
+  ],
+  "total_seconds": 2.3833780029963236
+}

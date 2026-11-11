@@ -4,17 +4,17 @@
   "test_runs_in_new_process": true,
   "train": {
     "exit_code": 0,
-    "seconds": 0.20106817097985186
+    "seconds": 0.2270202419895213
   },
   "artifacts_before_test": [
     "quality_stronger_predictions.json"
   ],
   "test": {
     "exit_code": 0,
-    "seconds": 0.29618012899300084
+    "seconds": 0.283923329989193
   },
   "scored_methods": [
     "quality_stronger"
   ],
-  "total_seconds": 19.352457840985153
+  "total_seconds": 24.17739391399664
 }

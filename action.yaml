@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Corrected missing launchers; run all 24 CPU audit cases, genuine stronger/weaker variants and three deterministic reference seeds, with untouched hidden evaluator and artifact restoration."
+notes: "Audit follow-up: isolate higher-order ablation with all five cameras, exhaustive exact cover on reference candidates, train-selected incomplete-pose shortcut, and save honest tuning diagnostics. Prior 24-case job succeeded."

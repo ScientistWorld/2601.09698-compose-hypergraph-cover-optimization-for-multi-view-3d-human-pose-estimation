@@ -1,0 +1,20 @@
+{
+  "scenario": "quality_no_higher_order",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.2599620459950529
+  },
+  "artifacts_before_test": [
+    "quality_no_higher_order_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.3385279740032274
+  },
+  "scored_methods": [
+    "quality_no_higher_order"
+  ],
+  "total_seconds": 4.98409281601198
+}
