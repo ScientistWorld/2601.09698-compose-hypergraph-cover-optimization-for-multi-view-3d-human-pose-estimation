@@ -1,39 +1,32 @@
 #!/bin/bash
-# Download all data and models needed for this environment.
+# Download all data needed for this environment (run on a node with internet).
 #
-# Run on a node with internet access BEFORE building the container
-# or submitting compute jobs.
+# Idempotent: every fetch is skipped when its file already exists.
 #
-# This script should be idempotent — safe to run multiple times.
-# It should skip files that already exist.
+# Sources: official CMU Panoptic release (3D body annotations
+# hdPose3d_stage1_coco19.tar and HD calibration) for five sequences of the
+# standard multi-view pose *training* split.  The public train benchmark
+# (cameras + simulated 2D detections + 3D answers) is then built from them.
+# The hidden test split is NOT fetched here; its answers live in eval/test/.
 #
-# Update the storage estimate below as you add downloads.
-#
-# Estimated total download size: <1 MB
-# Estimated disk usage after extraction: <10 MB
-#
-# This script is intentionally workspace-local so a fresh clone can recreate
-# all required assets without relying on machine-specific caches.
+# Estimated total download size: ~175 MB
+# Estimated disk usage after build: ~180 MB
 
 set -e
 
 cd /home/user
 
-# Fetch the small official CMU Panoptic sample assets used to build the
-# lightweight real-calibration benchmark. URLs were verified with HTTP 200.
-mkdir -p data/downloads/cmu_panoptic_sample
-[ -e data/downloads/cmu_panoptic_sample/calibration_171204_pose1_sample.json ] || \
-  curl -L --fail \
-    -o data/downloads/cmu_panoptic_sample/calibration_171204_pose1_sample.json \
-    http://domedb.perception.cs.cmu.edu/webdata/dataset/171204_pose1_sample/calibration_171204_pose1_sample.json
-[ -e data/downloads/cmu_panoptic_sample/hdPose3d_stage1_coco19.tar ] || \
-  curl -L --fail \
-    -o data/downloads/cmu_panoptic_sample/hdPose3d_stage1_coco19.tar \
-    http://domedb.perception.cs.cmu.edu/webdata/dataset/171204_pose1_sample/hdPose3d_stage1_coco19.tar
+BASE_URL="http://domedb.perception.cs.cmu.edu/webdata/dataset"
+TRAIN_SEQUENCES="160422_ultimatum1 160224_haggling1 160226_haggling1 160906_band1 160906_ian1"
 
-[ -e data/downloads/cmu_panoptic_sample_compose.json ] || \
-  python data/panoptic_sample_compose.py --output data/downloads/cmu_panoptic_sample_compose.json
+for seq in $TRAIN_SEQUENCES; do
+  dir="data/downloads/panoptic/$seq"
+  mkdir -p "$dir"
+  [ -s "$dir/calibration_$seq.json" ] || \
+    curl -L --fail -o "$dir/calibration_$seq.json" "$BASE_URL/$seq/calibration_$seq.json"
+  [ -s "$dir/hdPose3d_stage1_coco19.tar" ] || \
+    curl -L --fail -o "$dir/hdPose3d_stage1_coco19.tar" "$BASE_URL/$seq/hdPose3d_stage1_coco19.tar"
+done
 
-# Retain the original deterministic synthetic benchmark as a fallback and
-# debugging fixture.
-[ -e data/synthetic_compose_dataset.json ] || python data/synthetic_compose.py --output data/synthetic_compose_dataset.json
+# Public train benchmark (pure-Python builder, deterministic).
+[ -s data/downloads/panoptic_train.json ] || python3 data/panoptic_benchmark.py

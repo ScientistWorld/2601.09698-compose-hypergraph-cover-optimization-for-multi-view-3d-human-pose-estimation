@@ -152,6 +152,14 @@ def collect_view_detections(frame: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def normalize_top_level_dataset(payload: Any) -> Any:
+    if isinstance(payload, dict) and isinstance(payload.get("frames"), list):
+        # Benchmark inputs: cameras are listed per frame, views reference them by id.
+        for frame in payload["frames"]:
+            cams = {str(cam["camera_id"]): cam for cam in frame.get("cameras", []) or []}
+            for view in frame.get("views", []) or []:
+                if "camera" not in view and str(view.get("camera_id")) in cams:
+                    view["camera"] = cams[str(view["camera_id"])]
+        return payload
     if not isinstance(payload, dict) or "scenes" not in payload:
         return payload
     camera_by_id = {str(camera["camera_id"]): camera for camera in payload.get("cameras", [])}

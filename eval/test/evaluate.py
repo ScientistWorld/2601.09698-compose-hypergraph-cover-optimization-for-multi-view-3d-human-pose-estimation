@@ -1,134 +1,111 @@
 #!/usr/bin/env python3
-"""Held-out test-slice evaluator for precomputed multi-person 3D pose predictions."""
+"""Hidden test evaluator.
+
+Builds the hidden test scenes (inputs and answers exist only here, at test
+time), runs every registered predictor ``checkpoints/<name>/predict.sh`` on the
+inputs-only file, validates each output and scores it with the paper's
+metrics.  Runs with no arguments; writes ``scoring/scores_test.json``.
+
+Nothing a predictor writes is trusted: every number is recomputed from the
+raw predicted poses.  A predictor that crashes, times out, writes nothing or
+writes an impossible value is a failed run and gets the worst value of every
+metric.  The test size, cameras, thresholds and answers are fixed here.
+"""
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
+import stat
 import sys
-from typing import Any
+import tempfile
 
-try:
-    from eval.metrics import evaluate_pose_predictions
-except ModuleNotFoundError:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-    from eval.metrics import evaluate_pose_predictions
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
+from eval.test.runner import (  # noqa: E402
+    CHECKPOINTS,
+    WORKSPACE,
+    discover_predictors,
+    load_prediction_file,
+    run_predictor,
+    strip_answers,
+)
+from eval.test.scenes import SOURCE, build_test_scenes  # noqa: E402
+from eval.test.scoring import FAILURE_METRICS, ground_truth_from_frames, score_payload  # noqa: E402
 
-SLICE_NAME = "test"
-SPLIT_DESCRIPTION = "Held-out hash-stratified scenes balanced across crossing and non-crossing phases."
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--predictions", required=True, help="JSON file with precomputed predicted poses.")
-    parser.add_argument("--data", required=True, help="JSON file with benchmark scenes.")
-    parser.add_argument("--output", required=True, help="Where to write the test-slice scores JSON.")
-    parser.add_argument("--experiment", required=True, help="Top-level experiment name.")
-    parser.add_argument("--method-name", required=True, help="Method key under experiment results.")
-    parser.add_argument("--unit-scale", type=float, default=1.0, help="Scale coordinates before scoring.")
-    return parser.parse_args()
+EXPERIMENT = "cmu_panoptic_main"
+TIMEOUT_S = 1800
 
 
-def load_json(path: str) -> Any:
-    with Path(path).open("r", encoding="utf-8") as handle:
-        return json.load(handle)
-
-
-def frame_entries(data_payload: Any) -> list[tuple[int, str]]:
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("scenes"), list):
-        return [(idx, str(scene["scene_id"])) for idx, scene in enumerate(data_payload["scenes"])]
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), list):
-        return [
-            (idx, str(frame.get("frame_id", frame.get("id", idx))))
-            for idx, frame in enumerate(data_payload["frames"])
-        ]
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), dict):
-        return [(idx, str(frame_id)) for idx, frame_id in enumerate(sorted(data_payload["frames"]))]
-    raise ValueError("Train/test slicing expects a data payload with scenes or frames.")
-
-
-def split_frame_ids(data_payload: Any) -> list[str]:
-    entries = frame_entries(data_payload)
-    if not entries:
-        return []
-
-    midpoint = (len(entries) - 1) / 2.0
-    crossing_radius = max(1.0, len(entries) * 0.18)
-    buckets: dict[str, list[tuple[int, str]]] = {"crossing": [], "non_crossing": []}
-    for idx, frame_id in entries:
-        bucket = "crossing" if abs(idx - midpoint) <= crossing_radius else "non_crossing"
-        buckets[bucket].append((idx, frame_id))
-
-    selected: list[str] = []
-    for bucket_entries in buckets.values():
-        ordered = sorted(
-            bucket_entries,
-            key=lambda item: hashlib.sha256(f"compose-split:{item[1]}".encode("utf-8")).hexdigest(),
-        )
-        selected.extend(frame_id for pos, (_, frame_id) in enumerate(ordered) if pos % 2 == 1)
-    selected_set = set(selected)
-    return [frame_id for _, frame_id in entries if frame_id in selected_set]
-
-
-def filter_data_payload(data_payload: Any, keep_ids: set[str]) -> Any:
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("scenes"), list):
-        sliced = dict(data_payload)
-        sliced["scenes"] = [scene for scene in data_payload["scenes"] if str(scene["scene_id"]) in keep_ids]
-        return sliced
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), list):
-        sliced = dict(data_payload)
-        sliced["frames"] = [
-            frame
-            for idx, frame in enumerate(data_payload["frames"])
-            if str(frame.get("frame_id", frame.get("id", idx))) in keep_ids
-        ]
-        return sliced
-    if isinstance(data_payload, dict) and isinstance(data_payload.get("frames"), dict):
-        sliced = dict(data_payload)
-        sliced["frames"] = {
-            str(frame_id): frame for frame_id, frame in data_payload["frames"].items() if str(frame_id) in keep_ids
-        }
-        return sliced
-    raise ValueError("Train/test slicing expects a data payload with scenes or frames.")
-
-
-def load_existing_output(path: Path) -> dict[str, Any]:
-    if path.exists():
-        return json.loads(path.read_text(encoding="utf-8"))
-    return {"experiments": {}}
+def _set_mode(path: Path, mode: int) -> None:
+    try:
+        os.chmod(path, mode)
+    except OSError:
+        pass
 
 
 def main() -> int:
-    args = parse_args()
-    data_payload = load_json(args.data)
-    scene_ids = split_frame_ids(data_payload)
-    sliced_data = filter_data_payload(data_payload, set(scene_ids))
-    metrics = evaluate_pose_predictions(
-        prediction_payload=load_json(args.predictions),
-        data_payload=sliced_data,
-        unit_scale=args.unit_scale,
-    )
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--methods", nargs="*", default=None, help="Restrict to these registered methods")
+    parser.add_argument("--submissions", default=str(CHECKPOINTS), help="Directory of <name>/predict.sh")
+    parser.add_argument("--output", default=str(WORKSPACE / "scoring" / "scores_test.json"))
+    args = parser.parse_args()
 
-    output_path = Path(args.output)
-    output = load_existing_output(output_path)
-    output["slice"] = SLICE_NAME
-    output["split"] = {
-        "slice": SLICE_NAME,
-        "strategy": SPLIT_DESCRIPTION,
-        "frame_ids": scene_ids,
+    if not os.access(SOURCE, os.R_OK):
+        _set_mode(SOURCE, 0o644)
+    original_mode = stat.S_IMODE(SOURCE.stat().st_mode) or 0o644
+    benchmark = build_test_scenes()
+    inputs = strip_answers(benchmark)
+    ground_truth = ground_truth_from_frames(benchmark["frames"])
+    del benchmark
+
+    predictors = discover_predictors(Path(args.submissions))
+    if args.methods:
+        predictors = {name: path for name, path in predictors.items() if name in set(args.methods)}
+    if not predictors:
+        print(f"No predictors found under {args.submissions}/*/predict.sh", file=sys.stderr)
+        return 1
+
+    results, status = {}, {}
+    tmp = Path(tempfile.mkdtemp(prefix="compose_test_"))
+    try:
+        inputs_path = tmp / "inputs.json"
+        inputs_path.write_text(json.dumps(inputs), encoding="utf-8")
+        # Answers stay unreadable while untrusted predictor code runs.
+        _set_mode(SOURCE, 0)
+        for name, script in predictors.items():
+            out_path = tmp / f"{name}.predictions.json"
+            log_path = tmp / f"{name}.log"
+            state = run_predictor(script, inputs_path, out_path, log_path, TIMEOUT_S)
+            metrics = dict(FAILURE_METRICS)
+            if state == "ok":
+                payload, state = load_prediction_file(out_path)
+                if state == "ok":
+                    metrics, state = score_payload(payload, inputs, ground_truth)
+            else:
+                tail = log_path.read_text(encoding="utf-8", errors="replace")[-1500:] if log_path.exists() else ""
+                print(f"[test] {name} log tail:\n{tail}", flush=True)
+            if out_path.exists():
+                out_path.unlink()
+            results[name] = metrics
+            status[name] = state
+            print(f"[test] {name}: {state} {json.dumps(metrics, sort_keys=True)}", flush=True)
+    finally:
+        _set_mode(SOURCE, original_mode)
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    output = {
+        "slice": "test",
+        "experiments": {EXPERIMENT: {"results": results}},
+        "_status": status,
+        "_split": {"frames": len(inputs["frames"]), "people": sum(len(v) for v in ground_truth.values())},
     }
-    output.setdefault("prediction_files", {})[args.method_name] = args.predictions
-    experiment = output.setdefault("experiments", {}).setdefault(args.experiment, {})
-    experiment["_slice"] = SLICE_NAME
-    experiment["_frame_ids"] = scene_ids
-    experiment.setdefault("results", {})[args.method_name] = metrics
-
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps(output, indent=2, sort_keys=True))
+    out = Path(args.output)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0
 
 

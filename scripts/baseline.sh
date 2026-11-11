@@ -1,32 +1,35 @@
 #!/bin/bash
-# Run a baseline method from the paper.
+# Register the baselines as predictors.
 #
-# Baselines are simple reference methods the paper compares against. 
-# Implement this only if applicable, i.e. the paper has baselines.
-# You do not need to implement all baselines to begin — 
-# just enough to validate that the evaluation pipeline works 
-# and provide a reference point. You can decide to expand more baselines later.
-# Each baseline must be actually run and scored through evaluate.sh
-# so the numbers are verified, not self-reported.
-# You can decide what this baseline script should do yourself.
+#   pairwise_baseline  simple pairwise reprojection matching + union-find grouping
+#   mvpose_geometric   the paper's pairwise competitor (MvPose-style epipolar
+#                      affinity + convex cycle-consistent multi-way matching),
+#                      geometry only; its matching weight is selected on train
+#                      frames and recorded in baseline/mvpose_geometric_config.json.
 #
-# Usage:
-#   bash scripts/baseline.sh <name>
+# Usage: bash scripts/baseline.sh [--retune]
 
 set -e
 
 cd /home/user
 
-NAME="${1:-pairwise_baseline}"
-DATA="${2:-data/downloads/cmu_panoptic_sample_compose.json}"
-OUTPUT="${3:-checkpoints/${NAME}_predictions.json}"
+mkdir -p checkpoints/pairwise_baseline checkpoints/mvpose_geometric
 
-mkdir -p checkpoints
+cat > checkpoints/pairwise_baseline/predict.sh <<'PRED'
+#!/bin/bash
+set -euo pipefail
+cd /home/user
+exec python baseline/pairwise_baseline.py --data "$1" --output "$2" --reprojection-threshold 25 --min-views 2
+PRED
 
-python baseline/pairwise_baseline.py \
-  --data "$DATA" \
-  --output "$OUTPUT" \
-  --reprojection-threshold 25 \
-  --min-views 2
-
-bash scripts/evaluate.sh "$NAME" "$OUTPUT" "$DATA" cmu_panoptic_main
+if [[ "${1:-}" == "--retune" || ! -s baseline/mvpose_geometric_config.json ]]; then
+  python baseline/mvpose_geometric.py --tune-on data/downloads/panoptic_train.json \
+    --config baseline/mvpose_geometric_config.json
+fi
+cat > checkpoints/mvpose_geometric/predict.sh <<'PRED'
+#!/bin/bash
+set -euo pipefail
+cd /home/user
+exec python baseline/mvpose_geometric.py --inputs "$1" --output "$2" --config baseline/mvpose_geometric_config.json
+PRED
+echo "Registered checkpoints/pairwise_baseline and checkpoints/mvpose_geometric"

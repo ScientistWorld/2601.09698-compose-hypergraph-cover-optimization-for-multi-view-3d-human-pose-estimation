@@ -1,40 +1,24 @@
 #!/bin/bash
-# Evaluation script — the standard way to evaluate work in this environment.
+# Score one registered method on the public train frames into scoring/scores.json.
 #
-# This script must be SELF-CONTAINED using only code in eval/.
-# Do NOT import from method/ — evaluate.sh must work even when the
-# paper's method code is hidden from a scientist agent.
+# Usage:
+#   bash scripts/evaluate.sh <method_name>                     # runs checkpoints/<name>/predict.sh
+#   bash scripts/evaluate.sh <method_name> <predictions.json>  # scores an existing prediction file
 #
-# Design it so that anyone following the same output format can run
-# this script to evaluate their results.
-#
-# OUTPUT CONTRACT: This script MUST write scoring/scores.json containing
-# a JSON dict nested by experiment, e.g.:
-#   {"imagenet_classification": {"top1_accuracy": 82.1, "top5_accuracy": 94.8}}
-# Experiment and metric names must match the keys in scoring/reference.json.
-# This file is read by the system for automated comparison.
-#
-# Example usage:
-#   ./evaluate.sh <method_and_run_name>                             # evaluate with defaults
-#   ./evaluate.sh <method_and_run_name> checkpoints/epoch_10.pt     # evaluate a specific checkpoint
-#
-# Called from run.sh after training, or independently.
+# Uses only eval/ (no method code).  For the full train / hidden-test tables use
+# scripts/evaluate_train.sh and scripts/evaluate_test.sh (no arguments).
 
 set -e
 
 cd /home/user
 
-mkdir -p scoring
-
-METHOD_NAME="${1:-compose}"
-PREDICTIONS="${2:-checkpoints/${METHOD_NAME}_predictions.json}"
-DATA="${3:-data/downloads/cmu_panoptic_sample_compose.json}"
-EXPERIMENT="${4:-cmu_panoptic_main}"
-
-python eval/evaluate_predictions.py \
-  --predictions "$PREDICTIONS" \
-  --data "$DATA" \
-  --output scoring/scores.json \
-  --experiment "$EXPERIMENT" \
-  --method-name "$METHOD_NAME" \
-  --unit-scale 1000
+if [[ $# -lt 1 ]]; then
+  echo "usage: bash scripts/evaluate.sh <method_name> [predictions.json]" >&2
+  exit 2
+fi
+NAME="$1"
+if [[ $# -ge 2 ]]; then
+  python eval/evaluate_predictions.py --method-name "$NAME" --predictions "$2"
+else
+  python eval/evaluate_predictions.py --method-name "$NAME"
+fi

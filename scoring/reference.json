@@ -1,58 +1,47 @@
 {
   "experiments": {
     "cmu_panoptic_main": {
-      "description": "CMU Panoptic main benchmark from Table 1: multi-view multi-person 3D pose estimation using AP at MPJPE thresholds, recall at 500 mm, and MPJPE.",
+      "description": "Multi-person 3D pose estimation on CMU Panoptic with the paper's Table 1 protocol (AP at 25/50/100/150 mm MPJPE, recall at 500 mm, MPJPE over annotated joints). Hidden test: the standard test sequences 160906_pizza1, 160422_haggling1, 160906_ian5, 160906_band4 (100 evenly spaced frames each, 1367 people) seen by the paper's five HD cameras (3, 6, 12, 13, 23). Scaled setup: 2D detections come from a stochastic detector model applied to the real annotations instead of ViTPose on the videos, and each frame's people are rotated about the vertical axis by a hidden angle.",
+      "_note": "compose and mvpose rows are the paper's Table 1 numbers (full Panoptic test set, ViTPose detections). The gym keeps the paper's sequences, cameras and metric protocol but replaces the image-based 2D detector, so absolute values are comparable in scale, not identical in setting. pairwise_baseline and mvpose_geometric are this gym's runnable baselines; their numbers come from scoring/scores_test.json.",
       "weight": 1.0,
       "primary_metric": "ap_150mm",
       "metrics": {
         "ap_25mm": {
           "higher_is_better": true,
-          "coefficient": 0.0,
-          "description": "Average precision for very strict 25 mm pose localization. Reported as a diagnostic only because the frozen run saturated at 0.0 on both train and test."
+          "coefficient": 1.0,
+          "description": "Average precision with a 25 mm MPJPE threshold: the strict localisation regime where the paper reports its largest gain over the pairwise optimisation baseline (37.63 -> 54.66)."
         },
         "ap_50mm": {
           "higher_is_better": true,
-          "coefficient": 0.5,
-          "description": "Average precision for strict 50 mm pose localization."
+          "coefficient": 0.75,
+          "description": "Average precision with a 50 mm MPJPE threshold."
         },
         "ap_100mm": {
           "higher_is_better": true,
           "coefficient": 0.5,
-          "description": "Average precision for moderate 100 mm pose localization."
+          "description": "Average precision with a 100 mm MPJPE threshold."
         },
         "ap_150mm": {
           "higher_is_better": true,
           "coefficient": 1.0,
-          "description": "Headline average precision at the paper's 150 mm pose localization threshold."
-        },
-        "precision_150mm": {
-          "higher_is_better": true,
-          "coefficient": 0.4,
-          "description": "Fraction of emitted poses that match a ground-truth person within 150 mm, penalizing over-generation."
+          "description": "Average precision with a 150 mm MPJPE threshold (headline metric of the benchmark): correct people, correctly separated, no duplicates ranked above true poses."
         },
         "recall_500mm": {
           "higher_is_better": true,
-          "coefficient": 0.25,
-          "description": "Fraction of ground-truth people recovered within the paper's loose 500 mm recall threshold."
+          "coefficient": 1.0,
+          "description": "Constraint: share of annotated people that are the nearest person of some prediction within 500 mm, i.e. nobody is left out."
         },
         "mpjpe_mm": {
           "higher_is_better": false,
-          "coefficient": -0.5,
-          "description": "Mean per-joint position error for greedily matched predicted poses."
-        },
-        "pose_count_mae": {
-          "higher_is_better": false,
-          "coefficient": -0.3,
-          "description": "Mean absolute per-frame difference between the number of predicted and ground-truth people."
-        },
-        "gt_copy_rate": {
-          "higher_is_better": false,
           "coefficient": -1.0,
-          "description": "Percentage of predictions that exactly copy a ground-truth pose, catching label-leakage shortcuts."
+          "description": "Mean per-joint position error (mm) of the highest-scored prediction claiming each person within 500 mm; 500 when nothing is matched."
         }
       },
       "results": {
         "pairwise_baseline": {
+          "type": "baseline"
+        },
+        "mvpose_geometric": {
           "type": "baseline"
         },
         "mvpose": {

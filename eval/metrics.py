@@ -1,293 +1,206 @@
-"""Metrics for multi-person 3D pose prediction.
+"""Validation and metrics for multi-person 3D pose predictions (public copy).
 
-The evaluator is intentionally independent of method code. It consumes Python
-objects parsed from JSON and assumes coordinates are already in millimeters.
+Protocol (the standard CMU Panoptic multi-person evaluation used by the paper):
+every predicted pose is compared with every annotated person of its frame by
+MPJPE over that person's annotated joints and assigned to the closest one.
+Predictions are then ranked by their ``score`` over the whole split.
+
+* ``ap_<t>mm``     average precision; a prediction is a true positive when its
+                   MPJPE to its closest person is below ``t`` mm and that
+                   person has not already been claimed by a higher-scored
+                   prediction.
+* ``recall_500mm`` share of people that are the closest person of at least
+                   one prediction within 500 mm.
+* ``mpjpe_mm``     mean MPJPE of the first (highest-scored) prediction claiming
+                   each person within 500 mm.
+
+All values are percentages except ``mpjpe_mm`` (millimetres).  A run whose
+output is missing, unparsable or contains an impossible value is a failed run
+and receives ``FAILURE_METRICS`` -- the worst value of every metric.  A valid
+run that matches nobody gets ``mpjpe_mm = 500`` (the matching radius).
+
+Pure standard-library Python.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
-from typing import Any, Iterable
+from typing import Any
+
+NUM_JOINTS = 15
+AP_THRESHOLDS_MM = (25.0, 50.0, 100.0, 150.0)
+RECALL_THRESHOLD_MM = 500.0
+MAX_ABS_COORD_M = 10.0   # capture volume bound; anything outside is impossible
+METRIC_NAMES = ("ap_25mm", "ap_50mm", "ap_100mm", "ap_150mm", "recall_500mm", "mpjpe_mm")
+FAILURE_METRICS = {
+    "ap_25mm": 0.0,
+    "ap_50mm": 0.0,
+    "ap_100mm": 0.0,
+    "ap_150mm": 0.0,
+    "recall_500mm": 0.0,
+    "mpjpe_mm": RECALL_THRESHOLD_MM,
+}
 
 
-DEFAULT_THRESHOLDS_MM = (25.0, 50.0, 100.0, 150.0)
+class InvalidPredictions(ValueError):
+    """Raised when a prediction file violates the output contract."""
 
 
-@dataclass(frozen=True)
-class PoseRecord:
-    """Normalized pose container used by evaluation."""
-
-    pose_id: str
-    joints_3d: list[list[float]]
-    score: float = 1.0
+def _is_real(value: Any) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
 
-def iter_frames(payload: Any) -> list[tuple[str, dict[str, Any]]]:
-    """Return ``(frame_id, frame)`` pairs from accepted JSON layouts."""
+def frame_detection_counts(inputs: dict[str, Any]) -> dict[str, int]:
+    """Number of 2D detections per input frame (upper bound on emitted poses)."""
 
-    frames = payload.get("frames", payload) if isinstance(payload, dict) else payload
-    if isinstance(frames, dict):
-        return [(str(frame_id), frame) for frame_id, frame in frames.items()]
+    return {
+        str(frame["frame_id"]): sum(len(view.get("detections", [])) for view in frame.get("views", []))
+        for frame in inputs["frames"]
+    }
+
+
+def validate_predictions(payload: Any, max_poses: dict[str, int]) -> dict[str, list[tuple[list[list[float]], float]]]:
+    """Parse and check a prediction payload.
+
+    Contract: ``{"frames": {frame_id: {"predicted_poses": [{"joints_3d": 15x3 metres, "score": s}]}}}``
+    (``frames`` may also be a list of objects carrying ``frame_id``).  Every
+    input frame must be present; a frame may hold at most as many poses as it
+    has 2D detections; every pose needs exactly 15 joints of 3 finite
+    coordinates inside the capture volume and a finite score.
+    Returns ``{frame_id: [(joints_mm, score), ...]}``.
+    """
+
+    if not isinstance(payload, dict) or "frames" not in payload:
+        raise InvalidPredictions("prediction JSON must be an object with a 'frames' entry")
+    frames = payload["frames"]
     if isinstance(frames, list):
-        out = []
-        for idx, frame in enumerate(frames):
-            frame_id = frame.get("frame_id", frame.get("id", idx)) if isinstance(frame, dict) else idx
-            out.append((str(frame_id), frame))
-        return out
-    raise TypeError("Expected a JSON object/list with frames")
+        mapping = {}
+        for item in frames:
+            if not isinstance(item, dict) or "frame_id" not in item:
+                raise InvalidPredictions("list-style 'frames' entries need a 'frame_id'")
+            mapping[str(item["frame_id"])] = item
+        frames = mapping
+    if not isinstance(frames, dict):
+        raise InvalidPredictions("'frames' must be an object or a list")
 
-
-def normalize_data_payload(payload: Any) -> Any:
-    """Convert the tracked benchmark schema to the evaluator frame schema."""
-
-    if not isinstance(payload, dict) or "scenes" not in payload:
-        return payload
-    joint_names = payload["task"]["joint_names"]
-    frames = []
-    for scene in payload["scenes"]:
-        ground_truth = []
-        for person in scene.get("people", []):
-            joints = person["joints_3d"]
-            ground_truth.append(
-                {
-                    "person_id": person.get("person_id", len(ground_truth)),
-                    "joints_3d": [joints[name] for name in joint_names],
-                }
+    out: dict[str, list[tuple[list[list[float]], float]]] = {}
+    for frame_id, limit in max_poses.items():
+        if frame_id not in frames:
+            raise InvalidPredictions(f"missing frame {frame_id!r}")
+        entry = frames[frame_id]
+        poses = entry.get("predicted_poses") if isinstance(entry, dict) else None
+        if not isinstance(poses, list):
+            raise InvalidPredictions(f"frame {frame_id!r}: 'predicted_poses' must be a list")
+        if len(poses) > limit:
+            raise InvalidPredictions(
+                f"frame {frame_id!r}: {len(poses)} poses but only {limit} 2D detections"
             )
-        frames.append({"frame_id": scene["scene_id"], "ground_truth": ground_truth})
-    return {"frames": frames}
-
-
-def normalize_joints(joints: Any) -> list[list[float]]:
-    """Convert a JSON joint container to a ``J x 3`` float list."""
-
-    if isinstance(joints, dict):
-        try:
-            keys = sorted(joints, key=lambda item: int(item))
-        except (TypeError, ValueError):
-            keys = sorted(joints)
-        joints = [joints[key] for key in keys]
-
-    out = []
-    for joint in joints:
-        if not isinstance(joint, (list, tuple)) or len(joint) < 3:
-            raise ValueError("Expected each 3D joint to contain at least three coordinates")
-        out.append([float(joint[0]), float(joint[1]), float(joint[2])])
+        parsed = []
+        for idx, pose in enumerate(poses):
+            if not isinstance(pose, dict):
+                raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: must be an object")
+            joints = pose.get("joints_3d")
+            if not isinstance(joints, list) or len(joints) != NUM_JOINTS:
+                raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: need exactly {NUM_JOINTS} joints")
+            joints_mm = []
+            for joint in joints:
+                if not isinstance(joint, list) or len(joint) != 3 or not all(_is_real(v) for v in joint):
+                    raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: joints must be 3 finite numbers")
+                if any(abs(v) > MAX_ABS_COORD_M for v in joint):
+                    raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: joint outside the capture volume")
+                joints_mm.append([1000.0 * float(v) for v in joint])
+            score = pose.get("score")
+            if not _is_real(score):
+                raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: 'score' must be a finite number")
+            parsed.append((joints_mm, float(score)))
+        out[frame_id] = parsed
     return out
 
 
-def extract_poses(frame: dict[str, Any], key: str, id_key: str) -> list[PoseRecord]:
-    """Extract normalized poses from ``frame[key]``."""
+def ground_truth_from_frames(frames: list[dict[str, Any]]) -> dict[str, list[tuple[list[list[float]], list[bool]]]]:
+    """``{frame_id: [(joints_mm, joint_valid), ...]}`` from benchmark frames with ``people``."""
 
-    records = []
-    for idx, item in enumerate(frame.get(key, []) or []):
-        pose_id = str(item.get(id_key, item.get("pose_id", item.get("id", idx))))
-        score = float(item.get("score", item.get("confidence", 1.0)))
-        records.append(PoseRecord(pose_id=pose_id, joints_3d=normalize_joints(item["joints_3d"]), score=score))
-    return records
-
-
-def pose_mpjpe_mm(pred: list[list[float]], gt: list[list[float]]) -> float:
-    """Mean per-joint position error for one predicted/GT pose pair."""
-
-    joint_count = min(len(pred), len(gt))
-    if joint_count == 0:
-        return math.inf
-    errors = []
-    for pred_joint, gt_joint in zip(pred[:joint_count], gt[:joint_count]):
-        if not all(math.isfinite(value) for value in pred_joint + gt_joint):
-            continue
-        errors.append(
-            math.sqrt(
-                (pred_joint[0] - gt_joint[0]) ** 2
-                + (pred_joint[1] - gt_joint[1]) ** 2
-                + (pred_joint[2] - gt_joint[2]) ** 2
-            )
-        )
-    if not errors:
-        return math.inf
-    return sum(errors) / len(errors)
+    return {
+        str(frame["frame_id"]): [
+            ([[1000.0 * float(v) for v in joint] for joint in person["joints_3d"]], list(person["joint_valid"]))
+            for person in frame["people"]
+        ]
+        for frame in frames
+    }
 
 
-def distance_matrix(preds: list[PoseRecord], gts: list[PoseRecord]) -> list[list[float]]:
-    """Pairwise MPJPE distances in millimeters."""
-
-    mat = [[math.inf for _ in gts] for _ in preds]
-    for pred_idx, pred in enumerate(preds):
-        for gt_idx, gt in enumerate(gts):
-            mat[pred_idx][gt_idx] = pose_mpjpe_mm(pred.joints_3d, gt.joints_3d)
-    return mat
+def _mpjpe(pred: list[list[float]], gt: list[list[float]], valid: list[bool]) -> float:
+    errors = [math.dist(p, g) for p, g, ok in zip(pred, gt, valid) if ok]
+    return sum(errors) / len(errors) if errors else math.inf
 
 
-def greedy_min_error_matches(
-    distances: list[list[float]],
-    max_error: float | None = None,
-) -> list[tuple[int, int, float]]:
-    """One-to-one GT/pred matches chosen greedily by smallest available error."""
+def compute_metrics(
+    predictions: dict[str, list[tuple[list[list[float]], float]]],
+    ground_truth: dict[str, list[tuple[list[list[float]], list[bool]]]],
+) -> dict[str, float]:
+    """Paper protocol metrics for validated predictions."""
 
-    if not distances or not distances[0]:
-        return []
-    candidates = []
-    for pred_idx, row in enumerate(distances):
-        for gt_idx, dist in enumerate(row):
-            if math.isfinite(dist) and (max_error is None or dist <= max_error):
-                candidates.append((dist, pred_idx, gt_idx))
-    candidates.sort(key=lambda item: item[0])
-
-    used_preds: set[int] = set()
-    used_gts: set[int] = set()
-    matches = []
-    for dist, pred_idx, gt_idx in candidates:
-        if pred_idx in used_preds or gt_idx in used_gts:
-            continue
-        used_preds.add(pred_idx)
-        used_gts.add(gt_idx)
-        matches.append((pred_idx, gt_idx, dist))
-    return matches
-
-
-def average_precision_for_threshold(
-    frame_preds: Iterable[list[PoseRecord]],
-    frame_gts: Iterable[list[PoseRecord]],
-    threshold_mm: float,
-) -> float:
-    """Compute pose AP at an MPJPE threshold with score-ordered greedy matching."""
-
-    all_preds: list[tuple[float, int, int]] = []
-    gt_counts: list[int] = []
-    distances_by_frame: list[list[list[float]]] = []
-    preds_by_frame = list(frame_preds)
-    gts_by_frame = list(frame_gts)
-
-    for frame_idx, (preds, gts) in enumerate(zip(preds_by_frame, gts_by_frame)):
-        gt_counts.append(len(gts))
-        distances_by_frame.append(distance_matrix(preds, gts))
-        for pred_idx, pred in enumerate(preds):
-            all_preds.append((pred.score, frame_idx, pred_idx))
-
-    total_gt = sum(gt_counts)
-    if total_gt == 0 or not all_preds:
-        return 0.0
-
-    all_preds.sort(key=lambda item: item[0], reverse=True)
-    used_gts = [set() for _ in gt_counts]
-    tp = [0.0 for _ in all_preds]
-    fp = [0.0 for _ in all_preds]
-
-    for rank, (_, frame_idx, pred_idx) in enumerate(all_preds):
-        distances = distances_by_frame[frame_idx]
-        if not distances or not distances[0]:
-            fp[rank] = 1.0
-            continue
-        best_gt = None
-        best_dist = math.inf
-        for gt_idx, dist in enumerate(distances[pred_idx]):
-            if gt_idx in used_gts[frame_idx]:
+    eval_list: list[tuple[float, float, tuple[str, int] | None]] = []
+    total_gt = 0
+    for frame_id, gts in ground_truth.items():
+        total_gt += len(gts)
+        for joints, score in predictions.get(frame_id, []):
+            if not gts:
+                eval_list.append((math.inf, score, None))
                 continue
-            if dist < best_dist:
-                best_dist = dist
-                best_gt = gt_idx
-        if best_gt is not None and best_dist <= threshold_mm:
-            used_gts[frame_idx].add(best_gt)
-            tp[rank] = 1.0
+            dists = [_mpjpe(joints, gt_joints, valid) for gt_joints, valid in gts]
+            best = min(range(len(dists)), key=lambda k: dists[k])
+            eval_list.append((dists[best], score, (frame_id, best)))
+    if total_gt == 0:
+        raise ValueError("ground truth contains no people")
+    eval_list.sort(key=lambda item: -item[1])  # stable: ties keep frame order
+
+    metrics: dict[str, float] = {}
+    for threshold in AP_THRESHOLDS_MM:
+        metrics[f"ap_{int(threshold)}mm"] = 100.0 * _average_precision(eval_list, total_gt, threshold)
+    recalled = {gt_id for dist, _, gt_id in eval_list if gt_id is not None and dist < RECALL_THRESHOLD_MM}
+    metrics["recall_500mm"] = 100.0 * len(recalled) / total_gt
+    claimed: set[tuple[str, int]] = set()
+    errors = []
+    for dist, _, gt_id in eval_list:
+        if gt_id is not None and dist < RECALL_THRESHOLD_MM and gt_id not in claimed:
+            claimed.add(gt_id)
+            errors.append(dist)
+    metrics["mpjpe_mm"] = sum(errors) / len(errors) if errors else RECALL_THRESHOLD_MM
+    return metrics
+
+
+def _average_precision(eval_list: list[tuple[float, float, Any]], total_gt: int, threshold: float) -> float:
+    if not eval_list:
+        return 0.0
+    claimed: set[Any] = set()
+    tp_cum = fp_cum = 0.0
+    recall = []
+    precision = []
+    for dist, _, gt_id in eval_list:
+        if gt_id is not None and dist < threshold and gt_id not in claimed:
+            claimed.add(gt_id)
+            tp_cum += 1.0
         else:
-            fp[rank] = 1.0
-
-    recall = [0.0]
-    precision = [0.0]
-    running_tp = 0.0
-    running_fp = 0.0
-    for tp_value, fp_value in zip(tp, fp):
-        running_tp += tp_value
-        running_fp += fp_value
-        recall.append(running_tp / float(total_gt))
-        precision.append(running_tp / max(running_tp + running_fp, 1.0))
-    recall.append(1.0)
-    precision.append(0.0)
-
-    for idx in range(len(precision) - 2, -1, -1):
-        precision[idx] = max(precision[idx], precision[idx + 1])
+            fp_cum += 1.0
+        recall.append(tp_cum / (total_gt + 1e-5))
+        precision.append(tp_cum / (tp_cum + fp_cum + 1e-5))
+    for n in range(len(precision) - 2, -1, -1):
+        precision[n] = max(precision[n], precision[n + 1])
+    precision = [0.0] + precision + [0.0]
+    recall = [0.0] + recall + [1.0]
     ap = 0.0
-    for idx in range(len(recall) - 1):
-        if recall[idx + 1] != recall[idx]:
-            ap += (recall[idx + 1] - recall[idx]) * precision[idx + 1]
+    for i in range(len(recall) - 1):
+        if recall[i + 1] != recall[i]:
+            ap += (recall[i + 1] - recall[i]) * precision[i + 1]
     return ap
 
 
-def evaluate_pose_predictions(
-    prediction_payload: Any,
-    data_payload: Any,
-    thresholds_mm: Iterable[float] = DEFAULT_THRESHOLDS_MM,
-    recall_threshold_mm: float = 500.0,
-    unit_scale: float = 1.0,
-) -> dict[str, Any]:
-    """Evaluate predictions against ground truth frames."""
+def score_payload(payload: Any, inputs: dict[str, Any], ground_truth: dict[str, Any]) -> tuple[dict[str, float], str]:
+    """Validate and score; returns ``(metrics, status)`` with failure values on invalid output."""
 
-    pred_frames = dict(iter_frames(prediction_payload))
-    data_frames = iter_frames(normalize_data_payload(data_payload))
-
-    all_frame_preds: list[list[PoseRecord]] = []
-    all_frame_gts: list[list[PoseRecord]] = []
-    mpjpe_values = []
-    recall_matches = 0
-    precision_matches_150mm = 0
-    total_gt = 0
-    total_predictions = 0
-    pose_count_abs_errors = []
-    gt_copy_predictions = 0
-
-    for frame_id, data_frame in data_frames:
-        pred_frame = pred_frames.get(frame_id, {})
-        gts = extract_poses(data_frame, "ground_truth", "person_id")
-        preds = extract_poses(pred_frame, "predicted_poses", "pose_id")
-        if unit_scale != 1.0:
-            gts = [
-                PoseRecord(gt.pose_id, [[coord * unit_scale for coord in joint] for joint in gt.joints_3d], gt.score)
-                for gt in gts
-            ]
-            preds = [
-                PoseRecord(
-                    pred.pose_id,
-                    [[coord * unit_scale for coord in joint] for joint in pred.joints_3d],
-                    pred.score,
-                )
-                for pred in preds
-            ]
-
-        all_frame_gts.append(gts)
-        all_frame_preds.append(preds)
-        total_gt += len(gts)
-        total_predictions += len(preds)
-        pose_count_abs_errors.append(abs(len(preds) - len(gts)))
-
-        distances = distance_matrix(preds, gts)
-        for _, _, dist in greedy_min_error_matches(distances):
-            mpjpe_values.append(dist)
-        recall_matches += len(greedy_min_error_matches(distances, max_error=recall_threshold_mm))
-        precision_matches_150mm += len(greedy_min_error_matches(distances, max_error=150.0))
-        gt_copy_predictions += sum(
-            1
-            for row in distances
-            if any(math.isfinite(dist) and dist <= 1e-9 for dist in row)
-        )
-
-    metrics: dict[str, Any] = {
-        "mpjpe_mm": (sum(mpjpe_values) / len(mpjpe_values)) if mpjpe_values else None,
-        "recall_500mm": float(100.0 * recall_matches / total_gt) if total_gt else 0.0,
-        "precision_150mm": float(100.0 * precision_matches_150mm / total_predictions)
-        if total_predictions
-        else 0.0,
-        "pose_count_mae": float(sum(pose_count_abs_errors) / len(pose_count_abs_errors))
-        if pose_count_abs_errors
-        else 0.0,
-        "gt_copy_rate": float(100.0 * gt_copy_predictions / total_predictions) if total_predictions else 0.0,
-    }
-
-    for threshold in thresholds_mm:
-        metrics[f"ap_{int(threshold)}mm"] = 100.0 * average_precision_for_threshold(
-            all_frame_preds,
-            all_frame_gts,
-            float(threshold),
-        )
-    return metrics
+    try:
+        predictions = validate_predictions(payload, frame_detection_counts(inputs))
+    except InvalidPredictions as exc:
+        return dict(FAILURE_METRICS), f"failed: {exc}"
+    return compute_metrics(predictions, ground_truth), "ok"

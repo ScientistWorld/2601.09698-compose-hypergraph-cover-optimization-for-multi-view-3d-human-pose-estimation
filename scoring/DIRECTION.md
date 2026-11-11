@@ -1,25 +1,25 @@
 # Research Direction
 
 ## Research Problem
-The benchmark studies 3D multi-person pose recovery from sparse calibrated
-multi-view observations when each camera provides noisy, incomplete 2D pose
-detections. The central question is how to establish cross-view correspondences
-robustly enough to triangulate accurate 3D poses without 3D supervised
-training.
+3D multi-person pose recovery from sparse calibrated multi-view 2D detections
+in crowded, occluded scenes.  The central difficulty is establishing which
+detections across views belong to the same person — robustly to noisy joints,
+occlusion, flips, missed and spurious detections — and then reconstructing
+accurate 3D joints without 3D-supervised training.
 
 ## Core Contribution
-Work should improve cross-view association and 3D reconstruction from
-calibrated 2D detections without using 3D supervised training labels at
-prediction time. The relevant family is geometry-aware multi-view reasoning,
-not fully supervised image-to-3D regression.
+Better cross-view association and reconstruction from calibrated 2D
+detections: higher strict-threshold precision and lower joint error while
+recovering every person, on unseen scenes.
 
 ## Approach Scope
-Improvements may change how detections are compared, grouped, scored,
-reconstructed, filtered, and calibrated. The method must still solve the same
-multi-view association problem from the provided detections and camera
-calibration.
+Improvements may change how detections are compared, how correspondence
+hypotheses are formed, scored, pruned and selected, how joints are
+triangulated or refined, how detection and joint confidences are used, and how
+output poses are scored for ranking.  Any computation must run from the
+supplied cameras and detections at test time within the time limit.
 
 ## Out of Bounds
-Replacing the task with supervised 3D pose regression, using ground-truth person
-IDs, training a model to infer identities from the synthetic labels, or adding
-new image-level detectors/features for the scored experiment is out of scope.
+Using 3D annotations or identities at prediction time, regressing 3D poses with
+a model trained on the 3D answers, replacing or re-simulating the 2D
+detections, or modifying the evaluators.

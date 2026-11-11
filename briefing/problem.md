@@ -3,19 +3,24 @@
 ## Research Question
 
 How can a system recover accurate 3D poses for multiple people from a small set
-of synchronized calibrated RGB cameras when each view supplies noisy,
-occluded, and ambiguous 2D human pose detections?
+of synchronized, calibrated cameras when each view supplies noisy, occluded,
+incomplete and partly spurious 2D human pose detections, with no identity
+information linking detections across views?
 
 ## Why It Matters
 
 Reliable multi-view 3D pose estimation supports safety-critical monitoring,
-robot-human interaction, sports analysis, and activity understanding in scenes
-where monocular depth ambiguity or occlusion makes single-camera estimates
-unreliable.
+human-robot interaction, sports analysis and activity understanding in scenes
+where monocular depth ambiguity or occlusion make single-camera estimates
+unreliable.  3D annotations are expensive, so methods that work from 2D
+detections and camera geometry, without 3D supervision, are attractive.
 
 ## Success Criteria
 
-A successful system should group 2D observations that belong to the same
-physical person across cameras, reconstruct each person's 3D joints in the
-global camera coordinate frame, tolerate missed or spurious 2D detections, and
-avoid using ground-truth identities or 3D poses when forming predictions.
+A successful system decides which 2D detections across the cameras belong to
+the same physical person (a correspondence problem whose number of hypotheses
+grows exponentially with the number of views), rejects spurious detections,
+reconstructs each person's 15 body joints in the world frame, and ranks its
+outputs by confidence.  It should recover every person (recall), separate
+people without duplicates (precision at strict and loose distance thresholds),
+and localise joints accurately (MPJPE), on scenes it has never seen.

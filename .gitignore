@@ -231,3 +231,10 @@ tmp/
 protocol.md
 *.egg-info
 core.[0-9]*
+
+# Hardening iteration: raw Panoptic downloads used to build the hidden test
+# source (the committed eval/test/test_source.json is all the test needs),
+# and regenerated audit predictor folders.
+eval/test/downloads/
+redteam/hardening/submissions/
+redteam/hardening/*.log
