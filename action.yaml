@@ -1,4 +1,2 @@
-action: submit
-gpus: 0
-test: false
-notes: "Final audit check: rerun the higher-order tie under its shortcut name, compute cohort-sensitive ranks, and verify original data, checkpoints, scoring, and evaluator sources are restored."
+action: done
+notes: "Audit complete: 27 scenarios; genuine improvement scores higher, but five shortcuts dominate and four tie. Seed spread zero; higher-order benefit absent. Report committed and gym sources/artifacts restored."
