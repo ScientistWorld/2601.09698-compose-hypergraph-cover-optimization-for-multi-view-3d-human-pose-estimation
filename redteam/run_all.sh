@@ -4,7 +4,7 @@ cd /home/user
 export PYTHONDONTWRITEBYTECODE=1
 for name in \
   reference_seed_0 reference_seed_1 reference_seed_2 \
-  quality_stronger quality_weaker quality_no_higher_order pairwise_baseline \
+  quality_stronger quality_weaker shortcut_no_higher_order pairwise_baseline \
   shortcut_bruteforce shortcut_bruteforce_pruned shortcut_labels_jitter shortcut_exact_labels \
   shortcut_generator_rebuild shortcut_identity_labels shortcut_gt_replacement \
   shortcut_nan_mask shortcut_partial_pose shortcut_truncated_joints \

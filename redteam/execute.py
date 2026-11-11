@@ -216,7 +216,8 @@ def build_case(name, out, data):
             raise RuntimeError('reference run failed')
     elif name == 'quality_stronger':
         stronger(out, data)
-    elif name == 'quality_no_higher_order':
+    elif name == 'shortcut_no_higher_order':
+        # Shortcut: removing the claimed higher-order contribution ties this test.
         mod = load_module('compose_audit_pair_only', ROOT/'method/compose.py')
         norm = mod.normalize_dataset(data)
         frames = [mod.run_frame(f, norm['cameras'], 900, .003, .06, .03, 2) for f in norm['frames']]
