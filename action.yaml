@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Audit follow-up: isolate higher-order ablation with all five cameras, exhaustive exact cover on reference candidates, train-selected incomplete-pose shortcut, and save honest tuning diagnostics. Prior 24-case job succeeded."
+notes: "Final audit check: rerun the higher-order tie under its shortcut name, compute cohort-sensitive ranks, and verify original data, checkpoints, scoring, and evaluator sources are restored."

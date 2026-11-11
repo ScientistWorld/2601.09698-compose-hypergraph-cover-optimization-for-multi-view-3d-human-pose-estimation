@@ -1,0 +1,14 @@
+{
+  "base_commit": "8b9a054",
+  "snapshotted_artifacts_restored": {
+    "data/downloads/cmu_panoptic_sample_compose.json": true,
+    "checkpoints/compose_predictions.json": true,
+    "checkpoints/pairwise_baseline_predictions.json": true,
+    "scoring/scores.example.json": true,
+    "scoring/scores.json": true,
+    "scoring/scores_test.json": true,
+    "scoring/scores_train.json": true
+  },
+  "only_original_predictions": true,
+  "changed_gym_source_files": []
+}

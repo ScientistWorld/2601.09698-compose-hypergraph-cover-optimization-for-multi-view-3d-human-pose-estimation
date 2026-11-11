@@ -41,7 +41,7 @@
       ],
       "_slice": "train",
       "results": {
-        "quality_no_higher_order": {
+        "shortcut_no_higher_order": {
           "ap_100mm": 59.0267518887149,
           "ap_150mm": 82.59369489109604,
           "ap_25mm": 0.0,
@@ -56,7 +56,7 @@
     }
   },
   "prediction_files": {
-    "quality_no_higher_order": "checkpoints/quality_no_higher_order_predictions.json"
+    "shortcut_no_higher_order": "checkpoints/shortcut_no_higher_order_predictions.json"
   },
   "slice": "train",
   "split": {
