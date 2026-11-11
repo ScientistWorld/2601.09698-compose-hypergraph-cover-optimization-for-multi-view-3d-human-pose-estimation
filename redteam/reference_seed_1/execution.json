@@ -1,0 +1,24 @@
+{
+  "scenario": "reference_seed_1",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "method_run": {
+    "exit_code": 0,
+    "seconds": 14.590526126994519
+  },
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.2280373260146007
+  },
+  "artifacts_before_test": [
+    "reference_seed_1_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.289272522990359
+  },
+  "scored_methods": [
+    "reference_seed_1"
+  ],
+  "total_seconds": 15.141021713992814
+}

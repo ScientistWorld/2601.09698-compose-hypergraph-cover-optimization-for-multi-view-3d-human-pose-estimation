@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_truncated_joints",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.24174318800214678
+  },
+  "artifacts_before_test": [
+    "shortcut_truncated_joints_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.3538986070198007
+  },
+  "scored_methods": [
+    "shortcut_truncated_joints"
+  ],
+  "total_seconds": 0.6400265409902204
+}

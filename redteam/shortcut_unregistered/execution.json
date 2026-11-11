@@ -1,0 +1,21 @@
+{
+  "scenario": "shortcut_unregistered",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.4093394390074536
+  },
+  "artifacts_before_test": [
+    "shortcut_replay_predictions.json",
+    "shortcut_unregistered_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.2970520799863152
+  },
+  "scored_methods": [
+    "shortcut_replay"
+  ],
+  "total_seconds": 0.7714169939863496
+}

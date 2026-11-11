@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_forged_train_scores",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.20260727498680353
+  },
+  "artifacts_before_test": [
+    "shortcut_forged_train_scores_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.2836217689909972
+  },
+  "scored_methods": [
+    "shortcut_forged_train_scores"
+  ],
+  "total_seconds": 0.528758383996319
+}

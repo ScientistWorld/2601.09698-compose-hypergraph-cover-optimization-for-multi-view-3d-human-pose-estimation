@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_bruteforce",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.25171067300834693
+  },
+  "artifacts_before_test": [
+    "shortcut_bruteforce_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.2939527530106716
+  },
+  "scored_methods": [
+    "shortcut_bruteforce"
+  ],
+  "total_seconds": 14.499958515982144
+}

@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Audit bundle: three reference seeds, honest stronger/weaker geometry, exhaustive solver, and artifact/metric shortcuts through unchanged no-argument hidden test; restore all artifacts after each case."
+notes: "Corrected missing launchers; run all 24 CPU audit cases, genuine stronger/weaker variants and three deterministic reference seeds, with untouched hidden evaluator and artifact restoration."

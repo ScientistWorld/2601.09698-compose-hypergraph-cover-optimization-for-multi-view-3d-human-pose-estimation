@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_null_coordinates",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 1,
+    "seconds": 0.201255621999735
+  },
+  "artifacts_before_test": [
+    "shortcut_null_coordinates_predictions.json"
+  ],
+  "test": {
+    "exit_code": 1,
+    "seconds": 0.19078491601976566
+  },
+  "scored_methods": [],
+  "no_scores_written": true,
+  "error_excerpt": "Traceback (most recent call last):\n  File \"/home/user/eval/test/evaluate.py\", line 136, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 109, in main\n    metrics = evaluate_pose_predictions(\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 243, in evaluate_pose_predictions\n    preds = extract_poses(pred_frame, \"predicted_poses\", \"pose_id\")\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 87, in extract_poses\n    records.append(PoseRecord(pose_id=pose_id, joints_3d=normalize_joints(item[\"joints_3d\"]), score=score))\n                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/metrics.py\", line 76, in normalize_joints\n    out.append([float(joint[0]), float(joint[1]), float(joint[2])])\n                ^^^^^^^^^^^^^^^\nTypeError: float() argument must be a string or a real number, not 'NoneType'\n",
+  "total_seconds": 0.42943796698818915
+}

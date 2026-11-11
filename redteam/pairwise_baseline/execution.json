@@ -1,0 +1,24 @@
+{
+  "scenario": "pairwise_baseline",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "method_run": {
+    "exit_code": 0,
+    "seconds": 1.0196333599742502
+  },
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.21029018398257904
+  },
+  "artifacts_before_test": [
+    "pairwise_baseline_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.28622155499760993
+  },
+  "scored_methods": [
+    "pairwise_baseline"
+  ],
+  "total_seconds": 1.549426808982389
+}

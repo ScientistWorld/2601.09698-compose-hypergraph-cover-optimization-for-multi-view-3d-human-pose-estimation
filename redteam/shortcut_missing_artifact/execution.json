@@ -1,0 +1,18 @@
+{
+  "scenario": "shortcut_missing_artifact",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.230137080012355
+  },
+  "artifacts_before_test": [],
+  "test": {
+    "exit_code": 1,
+    "seconds": 0.2724499320029281
+  },
+  "scored_methods": [],
+  "no_scores_written": true,
+  "error_excerpt": "Traceback (most recent call last):\n  File \"/home/user/eval/test/evaluate.py\", line 136, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 110, in main\n    prediction_payload=load_json(args.predictions),\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/eval/test/evaluate.py\", line 36, in load_json\n    with Path(path).open(\"r\", encoding=\"utf-8\") as handle:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/pathlib.py\", line 1044, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'checkpoints/shortcut_missing_artifact_predictions.json'\n",
+  "total_seconds": 0.5699928329850081
+}

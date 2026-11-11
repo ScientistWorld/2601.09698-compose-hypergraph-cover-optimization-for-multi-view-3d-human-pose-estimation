@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_all_nan",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.21034440299263224
+  },
+  "artifacts_before_test": [
+    "shortcut_all_nan_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.2730958529864438
+  },
+  "scored_methods": [
+    "shortcut_all_nan"
+  ],
+  "total_seconds": 0.5246841849875636
+}

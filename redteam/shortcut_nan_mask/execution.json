@@ -1,0 +1,21 @@
+{
+  "scenario": "shortcut_nan_mask",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "kept_joint": 1,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.4040038779785391
+  },
+  "artifacts_before_test": [
+    "shortcut_nan_mask_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.28002164099598303
+  },
+  "scored_methods": [
+    "shortcut_nan_mask"
+  ],
+  "total_seconds": 1.2350649760046508
+}

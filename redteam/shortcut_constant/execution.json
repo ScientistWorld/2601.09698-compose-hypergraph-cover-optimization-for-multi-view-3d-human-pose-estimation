@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_constant",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.21611444701557048
+  },
+  "artifacts_before_test": [
+    "shortcut_constant_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.27740147401345894
+  },
+  "scored_methods": [
+    "shortcut_constant"
+  ],
+  "total_seconds": 0.5348191290104296
+}

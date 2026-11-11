@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_identity_labels",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.19460354500915855
+  },
+  "artifacts_before_test": [
+    "shortcut_identity_labels_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.26328325999202207
+  },
+  "scored_methods": [
+    "shortcut_identity_labels"
+  ],
+  "total_seconds": 0.5839925680193119
+}

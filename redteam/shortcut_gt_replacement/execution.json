@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_gt_replacement",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.19682843101327308
+  },
+  "artifacts_before_test": [
+    "shortcut_gt_replacement_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.3249279879964888
+  },
+  "scored_methods": [
+    "shortcut_gt_replacement"
+  ],
+  "total_seconds": 0.6872334649960976
+}

@@ -1,0 +1,20 @@
+{
+  "scenario": "shortcut_empty",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.18806367000797763
+  },
+  "artifacts_before_test": [
+    "shortcut_empty_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.2575952360057272
+  },
+  "scored_methods": [
+    "shortcut_empty"
+  ],
+  "total_seconds": 0.48118513100780547
+}

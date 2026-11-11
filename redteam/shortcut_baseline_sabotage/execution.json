@@ -1,0 +1,22 @@
+{
+  "scenario": "shortcut_baseline_sabotage",
+  "test_command": "bash scripts/evaluate_test.sh",
+  "test_runs_in_new_process": true,
+  "train": {
+    "exit_code": 0,
+    "seconds": 0.42768513297778554
+  },
+  "artifacts_before_test": [
+    "pairwise_baseline_predictions.json",
+    "shortcut_baseline_sabotage_predictions.json"
+  ],
+  "test": {
+    "exit_code": 0,
+    "seconds": 0.4957509849919006
+  },
+  "scored_methods": [
+    "pairwise_baseline",
+    "shortcut_baseline_sabotage"
+  ],
+  "total_seconds": 0.9965196129924152
+}
