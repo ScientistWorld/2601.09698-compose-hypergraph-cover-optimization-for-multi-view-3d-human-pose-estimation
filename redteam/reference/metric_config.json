@@ -1,0 +1,79 @@
+{
+  "experiments": {
+    "cmu_panoptic_main": {
+      "description": "CMU Panoptic main benchmark from Table 1: multi-view multi-person 3D pose estimation using AP at MPJPE thresholds, recall at 500 mm, and MPJPE.",
+      "weight": 1.0,
+      "primary_metric": "ap_150mm",
+      "metrics": {
+        "ap_25mm": {
+          "higher_is_better": true,
+          "coefficient": 0.0,
+          "description": "Average precision for very strict 25 mm pose localization. Reported as a diagnostic only because the frozen run saturated at 0.0 on both train and test."
+        },
+        "ap_50mm": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Average precision for strict 50 mm pose localization."
+        },
+        "ap_100mm": {
+          "higher_is_better": true,
+          "coefficient": 0.5,
+          "description": "Average precision for moderate 100 mm pose localization."
+        },
+        "ap_150mm": {
+          "higher_is_better": true,
+          "coefficient": 1.0,
+          "description": "Headline average precision at the paper's 150 mm pose localization threshold."
+        },
+        "precision_150mm": {
+          "higher_is_better": true,
+          "coefficient": 0.4,
+          "description": "Fraction of emitted poses that match a ground-truth person within 150 mm, penalizing over-generation."
+        },
+        "recall_500mm": {
+          "higher_is_better": true,
+          "coefficient": 0.25,
+          "description": "Fraction of ground-truth people recovered within the paper's loose 500 mm recall threshold."
+        },
+        "mpjpe_mm": {
+          "higher_is_better": false,
+          "coefficient": -0.5,
+          "description": "Mean per-joint position error for greedily matched predicted poses."
+        },
+        "pose_count_mae": {
+          "higher_is_better": false,
+          "coefficient": -0.3,
+          "description": "Mean absolute per-frame difference between the number of predicted and ground-truth people."
+        },
+        "gt_copy_rate": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Percentage of predictions that exactly copy a ground-truth pose, catching label-leakage shortcuts."
+        }
+      },
+      "results": {
+        "pairwise_baseline": {
+          "type": "baseline"
+        },
+        "mvpose": {
+          "type": "baseline",
+          "ap_25mm": 37.63,
+          "ap_50mm": 95.70,
+          "ap_100mm": 97.84,
+          "ap_150mm": 98.28,
+          "recall_500mm": 99.60,
+          "mpjpe_mm": 26.46
+        },
+        "compose": {
+          "type": "proposed",
+          "ap_25mm": 54.66,
+          "ap_50mm": 97.27,
+          "ap_100mm": 98.94,
+          "ap_150mm": 99.17,
+          "recall_500mm": 99.83,
+          "mpjpe_mm": 23.62
+        }
+      }
+    }
+  }
+}

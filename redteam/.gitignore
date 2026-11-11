@@ -1,0 +1,8 @@
+.state/
+**/predictions.json
+**/predictions_*.json
+**/candidate_*.json
+**/run.log
+**/test.log
+**/train.log
+__pycache__/
