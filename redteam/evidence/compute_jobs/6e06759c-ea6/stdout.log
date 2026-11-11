@@ -1,0 +1,118 @@
+[hive] This stdout log is managed by Hive.
+[hive] job_id: 8b365c94
+[hive] host: node
+[hive] node_id: fa1e512ed3f9712fa62d8f850965866b31c3e774a303b257b0b475d9
+[hive] user: nexus/user (remote)
+[hive] resource: gpu-cpu-test
+[hive] gpus: 0
+[hive] cpus: 1
+[hive] workdir: /home/user
+[hive] timeout_sec: 21600
+[hive] started_at: 2026-11-11 18:07:01 EST
+[hive] command: apptainer exec --containall --cleanenv --env HF_HOME=/home/user/shared/hf_cache --env TRANSFORMERS_CACHE=/home/user/shared/hf_cache --env HF_DATASETS_CACHE=/home/user/shared/hf_cache/datasets --env TORCH_HOME=/home/user/shared/hf_cache/torch --bind /home/user/scratch/AgentWorkspaces/workspaces/2601.09698:/home/user --overlay /home/user/scratch/AgentWorkspaces/workspaces/2601.09698/environment/overlay.img:ro --bind /home/user/scratch/AgentWorkspaces/shared/datasets:/home/user/shared/datasets:ro --bind /home/user/scratch/AgentWorkspaces/shared/models:/home/user/shared/models:ro --bind /home/user/scratch/AgentWorkspaces/shared/hf_cache:/home/user/shared/hf_cache /home/user/scratch/AgentWorkspaces/workspaces/2601.09698/environment/container.sif bash -c 'cd /home/user && bash /home/user/scripts/run.sh'
+{"scenario": "shortcut_no_higher_order", "test": {"exit_code": 0, "seconds": 0.3233338910213206}, "results": {"shortcut_no_higher_order": {"ap_100mm": 69.44654652786096, "ap_150mm": 84.82359724781254, "ap_25mm": 0.0, "ap_50mm": 3.775062656641605, "gt_copy_rate": 0.0, "mpjpe_mm": 69.60826910325201, "pose_count_mae": 1.9166666666666667, "precision_150mm": 51.06382978723404, "recall_500mm": 100.0}}}
+{
+  "cohort_size": 23,
+  "rank_deltas": {
+    "reference_seed_0": 0.0,
+    "quality_stronger": 2.551671012896335,
+    "quality_weaker": 0.4264649386702679,
+    "pairwise_baseline": -2.9163759910185583,
+    "shortcut_all_nan": -3.5403138488299084,
+    "shortcut_baseline_sabotage": 0.0,
+    "shortcut_bruteforce": -0.09942782541061036,
+    "shortcut_bruteforce_pruned": 0.0,
+    "shortcut_constant": -4.932934388131381,
+    "shortcut_empty": -4.184452433056761,
+    "shortcut_exact_labels": -1.6744784839236164,
+    "shortcut_forged_train_scores": -4.932934388131381,
+    "shortcut_generator_rebuild": 3.229132074533527,
+    "shortcut_gt_replacement": 3.229132074533527,
+    "shortcut_identity_labels": 2.670111848805396,
+    "shortcut_infinite": -3.5403138488299084,
+    "shortcut_labels_jitter": 3.229132074533527,
+    "shortcut_metadata_forgery": -4.932934388131381,
+    "shortcut_nan_mask": -0.008684990653214974,
+    "shortcut_no_higher_order": 0.0,
+    "shortcut_partial_pose": 0.15658057301617428,
+    "shortcut_truncated_joints": -0.1283672231842867,
+    "shortcut_unregistered": 0.0,
+    "reference_seed_1": 0.0,
+    "reference_seed_2": 0.0,
+    "shortcut_null_coordinates": null,
+    "shortcut_missing_artifact": null
+  },
+  "honest_cohort_sensitivity": {
+    "three_honest_variants": {
+      "cohort": [
+        "reference_seed_0",
+        "quality_stronger",
+        "quality_weaker"
+      ],
+      "metric_std": {
+        "ap_50mm": 26.944387406692705,
+        "ap_100mm": 12.815595669592247,
+        "ap_150mm": 10.81061452346517,
+        "precision_150mm": 22.74843518117819,
+        "recall_500mm": 13.74929852307176,
+        "mpjpe_mm": 12.235892363448656,
+        "pose_count_mae": 0.8021960598996474,
+        "gt_copy_rate": 0.0
+      },
+      "rank_deltas": {
+        "reference_seed_0": 0.0,
+        "quality_stronger": 5.892072781664538,
+        "quality_weaker": -0.45539384334350663
+      }
+    },
+    "honest_variants_and_simple_baseline": {
+      "cohort": [
+        "reference_seed_0",
+        "quality_stronger",
+        "quality_weaker",
+        "pairwise_baseline"
+      ],
+      "metric_std": {
+        "ap_50mm": 24.97316312311494,
+        "ap_100mm": 31.659581816142186,
+        "ap_150mm": 32.32884525897729,
+        "precision_150mm": 26.039252095746168,
+        "recall_500mm": 26.84187234734401,
+        "mpjpe_mm": 176.1921474760809,
+        "pose_count_mae": 0.6948262839118962,
+        "gt_copy_rate": 0.0
+      },
+      "rank_deltas": {
+        "reference_seed_0": 0.0,
+        "quality_stronger": 3.5767560209577365,
+        "quality_weaker": 0.5964438003896547,
+        "pairwise_baseline": -4.598267915718991
+      }
+    }
+  },
+  "reference_seed_spread": {
+    "ap_100mm": 0.0,
+    "ap_150mm": 0.0,
+    "ap_25mm": 0.0,
+    "ap_50mm": 0.0,
+    "gt_copy_rate": 0.0,
+    "mpjpe_mm": 0.0,
+    "pose_count_mae": 0.0,
+    "precision_150mm": 0.0,
+    "recall_500mm": 0.0
+  }
+}
+{
+  "base_commit": "8b9a054",
+  "snapshotted_artifacts_restored": {
+    "data/downloads/cmu_panoptic_sample_compose.json": true,
+    "checkpoints/compose_predictions.json": true,
+    "checkpoints/pairwise_baseline_predictions.json": true,
+    "scoring/scores.example.json": true,
+    "scoring/scores.json": true,
+    "scoring/scores_test.json": true,
+    "scoring/scores_train.json": true
+  },
+  "only_original_predictions": true,
+  "changed_gym_source_files": []
+}
