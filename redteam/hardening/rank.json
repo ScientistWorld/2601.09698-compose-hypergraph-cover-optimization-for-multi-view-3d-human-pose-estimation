@@ -1,0 +1,285 @@
+{
+ "status": {
+  "compose": "ok",
+  "mvpose_geometric": "ok",
+  "pairwise_baseline": "ok",
+  "bruteforce_unpruned": "ok",
+  "compose_old_operating_point": "ok",
+  "compose_pairs_only": "ok",
+  "compose_robust": "ok",
+  "compose_three_cams": "ok",
+  "shortcut_constant": "ok",
+  "shortcut_crash": "failed: predictor exited with code 1",
+  "shortcut_empty": "ok",
+  "shortcut_forged_metrics": "ok",
+  "shortcut_hidden_source_read": "ok",
+  "shortcut_identity_grouping": "ok",
+  "shortcut_infinite": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+  "shortcut_missing_frames": "failed: missing frame 'test_0001'",
+  "shortcut_null_coordinates": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+  "shortcut_out_of_volume": "ok",
+  "shortcut_partial_pose_nan": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+  "shortcut_spray_recall": "ok",
+  "shortcut_too_many_poses": "failed: frame 'test_0000': 246 poses but only 26 2D detections",
+  "shortcut_train_gt_lookup": "ok",
+  "shortcut_truncated_joints": "failed: frame 'test_0000' pose 0: need exactly 15 joints"
+ },
+ "metrics": {
+  "compose": {
+   "ap_100mm": 98.02932309180049,
+   "ap_150mm": 98.18011331208864,
+   "ap_25mm": 63.34728229895708,
+   "ap_50mm": 96.40871544647823,
+   "mpjpe_mm": 22.410839676444475,
+   "recall_500mm": 99.63423555230432
+  },
+  "mvpose_geometric": {
+   "ap_100mm": 96.81686687969874,
+   "ap_150mm": 98.35201460476821,
+   "ap_25mm": 56.09698003616961,
+   "ap_50mm": 88.1229136327195,
+   "mpjpe_mm": 25.660860450159845,
+   "recall_500mm": 99.41477688368691
+  },
+  "pairwise_baseline": {
+   "ap_100mm": 56.74276897165056,
+   "ap_150mm": 57.855508656100696,
+   "ap_25mm": 35.602061288997746,
+   "ap_50mm": 52.25459031277907,
+   "mpjpe_mm": 50.871125216246035,
+   "recall_500mm": 75.42062911485003
+  },
+  "bruteforce_unpruned": {
+   "ap_100mm": 50.36535576891764,
+   "ap_150mm": 50.97679489832924,
+   "ap_25mm": 34.390385713678626,
+   "ap_50mm": 48.986177324734825,
+   "mpjpe_mm": 95.64497069856536,
+   "recall_500mm": 65.76444769568398
+  },
+  "compose_old_operating_point": {
+   "ap_100mm": 75.59282924032411,
+   "ap_150mm": 75.5946248453455,
+   "ap_25mm": 41.094767600337875,
+   "ap_50mm": 73.86373710449934,
+   "mpjpe_mm": 26.118623660507417,
+   "recall_500mm": 99.56108266276517
+  },
+  "compose_pairs_only": {
+   "ap_100mm": 79.52835784546346,
+   "ap_150mm": 79.52835784546346,
+   "ap_25mm": 45.34093107059366,
+   "ap_50mm": 78.01230724968619,
+   "mpjpe_mm": 25.283241633430915,
+   "recall_500mm": 99.63423555230432
+  },
+  "compose_robust": {
+   "ap_100mm": 99.08073973121756,
+   "ap_150mm": 99.23552879842555,
+   "ap_25mm": 85.13110699132284,
+   "ap_50mm": 98.10323242915581,
+   "mpjpe_mm": 18.119074216274413,
+   "recall_500mm": 99.63423555230432
+  },
+  "compose_three_cams": {
+   "ap_100mm": 89.2197946568,
+   "ap_150mm": 89.93960845172887,
+   "ap_25mm": 21.90773930849401,
+   "ap_50mm": 74.19886582110658,
+   "mpjpe_mm": 35.62249481874969,
+   "recall_500mm": 92.2457937088515
+  },
+  "shortcut_constant": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 482.89309378060153,
+   "recall_500mm": 0.8778346744696416
+  },
+  "shortcut_crash": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_empty": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_forged_metrics": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 482.89309378060153,
+   "recall_500mm": 0.8778346744696416
+  },
+  "shortcut_hidden_source_read": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_identity_grouping": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_infinite": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_missing_frames": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_null_coordinates": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_out_of_volume": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_partial_pose_nan": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_spray_recall": {
+   "ap_100mm": 77.90644034954698,
+   "ap_150mm": 78.01593979555747,
+   "ap_25mm": 55.42155271210244,
+   "ap_50mm": 76.8051832194886,
+   "mpjpe_mm": 79.27167407380777,
+   "recall_500mm": 99.85369422092172
+  },
+  "shortcut_too_many_poses": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  },
+  "shortcut_train_gt_lookup": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.001063483903379322,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 370.52377623566736,
+   "recall_500mm": 21.28749085588881
+  },
+  "shortcut_truncated_joints": {
+   "ap_100mm": 0.0,
+   "ap_150mm": 0.0,
+   "ap_25mm": 0.0,
+   "ap_50mm": 0.0,
+   "mpjpe_mm": 500.0,
+   "recall_500mm": 0.0
+  }
+ },
+ "rank": {
+  "honest": {
+   "std": {
+    "ap_25mm": 18.55451606259205,
+    "ap_50mm": 17.1646664334921,
+    "ap_100mm": 17.64966911376742,
+    "ap_150mm": 17.595448416342336,
+    "recall_500mm": 12.487411310481667,
+    "mpjpe_mm": 23.941057266506316
+   },
+   "rank_delta": {
+    "compose_robust": 1.5171171262009453,
+    "compose": 0.0,
+    "mvpose_geometric": -0.9307034996057605,
+    "compose_pairs_only": -3.478404295012419,
+    "compose_old_operating_point": -4.264328541366172,
+    "compose_three_cams": -5.0652503613174655,
+    "shortcut_spray_recall": -5.357235929382732,
+    "pairwise_baseline": -10.013805900180131,
+    "bruteforce_unpruned": -13.436967790027822,
+    "shortcut_train_gt_lookup": -36.797997903507216,
+    "shortcut_constant": -43.12605894147335,
+    "shortcut_forged_metrics": -43.12605894147335,
+    "shortcut_crash": -43.910899149927545,
+    "shortcut_empty": -43.910899149927545,
+    "shortcut_hidden_source_read": -43.910899149927545,
+    "shortcut_identity_grouping": -43.910899149927545,
+    "shortcut_infinite": -43.910899149927545,
+    "shortcut_missing_frames": -43.910899149927545,
+    "shortcut_null_coordinates": -43.910899149927545,
+    "shortcut_out_of_volume": -43.910899149927545,
+    "shortcut_partial_pose_nan": -43.910899149927545,
+    "shortcut_too_many_poses": -43.910899149927545,
+    "shortcut_truncated_joints": -43.910899149927545
+   }
+  },
+  "all": {
+   "std": {
+    "ap_25mm": 26.209535038602343,
+    "ap_50mm": 38.592181533075106,
+    "ap_100mm": 40.58280212141775,
+    "ap_150mm": 40.806256260269734,
+    "recall_500mm": 45.10852433136173,
+    "mpjpe_mm": 219.90592521186264
+   },
+   "rank_delta": {
+    "compose_robust": 0.9224068329437318,
+    "compose": 0.0,
+    "mvpose_geometric": -0.46802429556512204,
+    "shortcut_spray_recall": -1.679145241946573,
+    "compose_pairs_only": -1.7426145586792603,
+    "compose_old_operating_point": -2.1355545765776216,
+    "compose_three_cams": -2.547063644290729,
+    "pairwise_baseline": -4.079756462799122,
+    "bruteforce_unpruned": -4.854318129227292,
+    "shortcut_train_gt_lookup": -11.2241695720057,
+    "shortcut_constant": -12.187640511006652,
+    "shortcut_forged_metrics": -12.187640511006652,
+    "shortcut_crash": -12.284892945702968,
+    "shortcut_empty": -12.284892945702968,
+    "shortcut_hidden_source_read": -12.284892945702968,
+    "shortcut_identity_grouping": -12.284892945702968,
+    "shortcut_infinite": -12.284892945702968,
+    "shortcut_missing_frames": -12.284892945702968,
+    "shortcut_null_coordinates": -12.284892945702968,
+    "shortcut_out_of_volume": -12.284892945702968,
+    "shortcut_partial_pose_nan": -12.284892945702968,
+    "shortcut_too_many_poses": -12.284892945702968,
+    "shortcut_truncated_joints": -12.284892945702968
+   }
+  }
+ }
+}

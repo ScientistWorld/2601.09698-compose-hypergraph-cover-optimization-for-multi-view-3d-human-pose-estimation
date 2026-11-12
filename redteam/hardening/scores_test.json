@@ -4,10 +4,10 @@
     "people": 1367
   },
   "_status": {
-    "bruteforce_unpruned": "failed: frame 'test_0075' pose 3: joint outside the capture volume",
-    "compose_old_operating_point": "failed: frame 'test_0012' pose 1: joint outside the capture volume",
-    "compose_pairs_only": "failed: frame 'test_0012' pose 2: joint outside the capture volume",
-    "compose_robust": "failed: frame 'test_0012' pose 0: joint outside the capture volume",
+    "bruteforce_unpruned": "ok",
+    "compose_old_operating_point": "ok",
+    "compose_pairs_only": "ok",
+    "compose_robust": "ok",
     "compose_three_cams": "ok",
     "shortcut_constant": "ok",
     "shortcut_crash": "failed: predictor exited with code 1",
@@ -18,10 +18,10 @@
     "shortcut_infinite": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
     "shortcut_missing_frames": "failed: missing frame 'test_0001'",
     "shortcut_null_coordinates": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
-    "shortcut_out_of_volume": "failed: frame 'test_0000' pose 0: joint outside the capture volume",
+    "shortcut_out_of_volume": "ok",
     "shortcut_partial_pose_nan": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
-    "shortcut_spray_recall": "failed: frame 'test_0012' pose 0: joint outside the capture volume",
-    "shortcut_too_many_poses": "failed: predictor exited with code 1",
+    "shortcut_spray_recall": "ok",
+    "shortcut_too_many_poses": "failed: frame 'test_0000': 246 poses but only 26 2D detections",
     "shortcut_train_gt_lookup": "ok",
     "shortcut_truncated_joints": "failed: frame 'test_0000' pose 0: need exactly 15 joints"
   },
@@ -29,44 +29,44 @@
     "cmu_panoptic_main": {
       "results": {
         "bruteforce_unpruned": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 50.36535576891764,
+          "ap_150mm": 50.97679489832924,
+          "ap_25mm": 34.390385713678626,
+          "ap_50mm": 48.986177324734825,
+          "mpjpe_mm": 95.64497069856536,
+          "recall_500mm": 65.76444769568398
         },
         "compose_old_operating_point": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 75.59282924032411,
+          "ap_150mm": 75.5946248453455,
+          "ap_25mm": 41.094767600337875,
+          "ap_50mm": 73.86373710449934,
+          "mpjpe_mm": 26.118623660507417,
+          "recall_500mm": 99.56108266276517
         },
         "compose_pairs_only": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 79.52835784546346,
+          "ap_150mm": 79.52835784546346,
+          "ap_25mm": 45.34093107059366,
+          "ap_50mm": 78.01230724968619,
+          "mpjpe_mm": 25.283241633430915,
+          "recall_500mm": 99.63423555230432
         },
         "compose_robust": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 99.08073973121756,
+          "ap_150mm": 99.23552879842555,
+          "ap_25mm": 85.13110699132284,
+          "ap_50mm": 98.10323242915581,
+          "mpjpe_mm": 18.119074216274413,
+          "recall_500mm": 99.63423555230432
         },
         "compose_three_cams": {
-          "ap_100mm": 89.1646598422613,
-          "ap_150mm": 90.11888166873612,
-          "ap_25mm": 19.979126507516334,
-          "ap_50mm": 72.63238276695229,
-          "mpjpe_mm": 39.54867724903722,
-          "recall_500mm": 93.56254572055596
+          "ap_100mm": 89.2197946568,
+          "ap_150mm": 89.93960845172887,
+          "ap_25mm": 21.90773930849401,
+          "ap_50mm": 74.19886582110658,
+          "mpjpe_mm": 35.62249481874969,
+          "recall_500mm": 92.2457937088515
         },
         "shortcut_constant": {
           "ap_100mm": 0.0,
@@ -157,12 +157,12 @@
           "recall_500mm": 0.0
         },
         "shortcut_spray_recall": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 77.90644034954698,
+          "ap_150mm": 78.01593979555747,
+          "ap_25mm": 55.42155271210244,
+          "ap_50mm": 76.8051832194886,
+          "mpjpe_mm": 79.27167407380777,
+          "recall_500mm": 99.85369422092172
         },
         "shortcut_too_many_poses": {
           "ap_100mm": 0.0,

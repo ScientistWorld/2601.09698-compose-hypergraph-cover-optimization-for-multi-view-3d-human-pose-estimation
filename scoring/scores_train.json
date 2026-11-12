@@ -11,7 +11,7 @@
     }
   },
   "_status": {
-    "compose": "failed: frame 'train_2_000' pose 0: joint outside the capture volume",
+    "compose": "ok",
     "mvpose_geometric": "ok",
     "pairwise_baseline": "ok"
   },
@@ -19,20 +19,20 @@
     "cmu_panoptic_main": {
       "results": {
         "compose": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 96.29028604707415,
+          "ap_150mm": 97.06603170633777,
+          "ap_25mm": 51.458891762304226,
+          "ap_50mm": 90.91804885875897,
+          "mpjpe_mm": 24.07590942976166,
+          "recall_500mm": 97.94520547945206
         },
         "mvpose_geometric": {
-          "ap_100mm": 86.12058900377983,
-          "ap_150mm": 89.69980788632247,
-          "ap_25mm": 44.25134002850374,
-          "ap_50mm": 74.55757708804676,
-          "mpjpe_mm": 34.61382980252048,
-          "recall_500mm": 95.59686888454011
+          "ap_100mm": 92.05173207951314,
+          "ap_150mm": 94.58300182251755,
+          "ap_25mm": 47.81329545652818,
+          "ap_50mm": 82.50543964203102,
+          "mpjpe_mm": 30.254996647616007,
+          "recall_500mm": 97.74951076320939
         },
         "pairwise_baseline": {
           "ap_100mm": 49.89406912526449,

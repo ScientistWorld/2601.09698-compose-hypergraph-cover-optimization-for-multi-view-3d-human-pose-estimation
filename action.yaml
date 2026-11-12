@@ -3,4 +3,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Hardening job: rebuild reference (COMPOSE tuned on train), baselines, train/hidden-test scores, validate, then audit variants and shortcuts through the hidden test with rank deltas, paired bootstrap and alternative noise seeds."
+notes: "Hardening job 2: retune COMPOSE and MvPose on train with extended grids, reproduce train/hidden-test scores, validate, audit variants/shortcuts (rank deltas, paired bootstrap, alternative noise seeds)."

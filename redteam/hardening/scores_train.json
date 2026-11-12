@@ -12,9 +12,9 @@
   },
   "_status": {
     "compose_old_operating_point": "ok",
-    "compose_pairs_only": "failed: frame 'train_0_021' pose 4: joint outside the capture volume",
-    "compose_robust": "failed: frame 'train_2_000' pose 0: joint outside the capture volume",
-    "compose_three_cams": "failed: frame 'train_0_042' pose 2: joint outside the capture volume"
+    "compose_pairs_only": "ok",
+    "compose_robust": "ok",
+    "compose_three_cams": "ok"
   },
   "experiments": {
     "cmu_panoptic_main": {
@@ -28,28 +28,28 @@
           "recall_500mm": 97.55381604696673
         },
         "compose_pairs_only": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 78.35091496556169,
+          "ap_150mm": 78.80173590958569,
+          "ap_25mm": 28.699690029565296,
+          "ap_50mm": 72.64338218050742,
+          "mpjpe_mm": 31.386749944054408,
+          "recall_500mm": 98.04305283757338
         },
         "compose_robust": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 97.10844929175927,
+          "ap_150mm": 97.72463212655774,
+          "ap_25mm": 75.06474182125093,
+          "ap_50mm": 94.35652944366333,
+          "mpjpe_mm": 20.894357544094486,
+          "recall_500mm": 97.94520547945206
         },
         "compose_three_cams": {
-          "ap_100mm": 0.0,
-          "ap_150mm": 0.0,
-          "ap_25mm": 0.0,
-          "ap_50mm": 0.0,
-          "mpjpe_mm": 500.0,
-          "recall_500mm": 0.0
+          "ap_100mm": 78.7179556545423,
+          "ap_150mm": 80.29191425346018,
+          "ap_25mm": 16.22046267051694,
+          "ap_50mm": 66.5567545982433,
+          "mpjpe_mm": 36.57718484348882,
+          "recall_500mm": 82.38747553816047
         }
       }
     }
