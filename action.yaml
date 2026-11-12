@@ -1,6 +1,4 @@
 # Once you set action to 'submit' or 'done', STOP immediately.
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim
-notes: "Hardening job 3: re-select MvPose baseline alpha on extended train grid, rerun reference reproduction (train + hidden test), validate, refresh audit rank deltas and paired-bootstrap/noise-seed analysis."
+notes: "Hardened gym: real CMU Panoptic scenes (paper's sequences/cameras/protocol), hidden test-time test split with predictor interface and worst-value failures, reference restored to paper cost + train tuning (hidden AP25 63.35/AP150 98.18/MPJPE 22.41); better variant +1.50 beyond noise, all weaker variants and shortcuts negative. See HARDENING.md."
