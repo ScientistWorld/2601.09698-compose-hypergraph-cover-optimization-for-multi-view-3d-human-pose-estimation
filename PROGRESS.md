@@ -1,5 +1,25 @@
 # Progress
 
+## Current State (hardening, iteration 11)
+
+This section supersedes the history below; see `HARDENING.md` for evidence.
+- Data: `data/panoptic_benchmark.py` builds the public train split (300 frames,
+  1022 people) from five CMU Panoptic training sequences; the hidden test
+  (400 frames, 1367 people, four standard test sequences) is built inside
+  `eval/test/` at test time.
+- Interface: `checkpoints/<name>/predict.sh INPUTS OUTPUT`; evaluators discover
+  every predictor on disk; scoring = paper Table 1 metrics with worst-value
+  failures.
+- Method: `method/compose.py` (paper cost, incremental pruning, PuLP/CBC exact
+  cover), `method/tune_compose.py` (train-split selection,
+  `method/compose_config.json`).
+- Baselines: `baseline/pairwise_baseline.py`, `baseline/mvpose_geometric.py`.
+- Hidden test: compose AP25 63.35 / AP50 96.41 / AP100 98.03 / AP150 98.18 /
+  R500 99.63 / MPJPE 22.41; mvpose_geometric 60.26 / 94.28 / 98.03 / 98.65 /
+  99.41 / 23.13; pairwise_baseline 35.60 / 52.25 / 56.74 / 57.86 / 75.42 / 50.87.
+- Earlier sections describe the superseded single-body sample benchmark.
+
+
 ## What Works
 
 - Continuing-agent audit at 2026-06-02 04:15 reconfirmed the workspace after

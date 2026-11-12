@@ -19,3 +19,12 @@ baseline MvPose while remaining training-free.
 - CMU Panoptic: AP@25 improves from 37.63 for MvPose to 54.66 for COMPOSE.
 - CMU Panoptic: MPJPE improves from 26.46 mm for MvPose to 23.62 mm.
 - Campus: COMPOSE reports 97.3% average PCP, above the reproduced MvPose result of 95.8%.
+
+## This Gym
+
+Real multi-person CMU Panoptic scenes (standard train/test sequences, the
+paper's five HD cameras, 15-joint protocol) with simulated 2D detections; the
+test split is hidden and built at test time.  Methods are training-free
+predictors (`checkpoints/<name>/predict.sh`) scored with the paper's Table 1
+metrics.  Reference COMPOSE on the hidden test: AP25 63.35, AP50 96.41,
+AP100 98.03, AP150 98.18, recall 99.63, MPJPE 22.41 mm.

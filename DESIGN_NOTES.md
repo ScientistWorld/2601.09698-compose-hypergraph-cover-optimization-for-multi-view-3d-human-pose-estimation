@@ -1,3 +1,5 @@
+> **Superseded (iteration 11):** this note describes the pre-hardening gym (single-body Panoptic sample, visible answers). The current design and its verification are in `HARDENING.md`.
+
 # Train/Test Evaluation Design Notes
 
 ## Checks Performed

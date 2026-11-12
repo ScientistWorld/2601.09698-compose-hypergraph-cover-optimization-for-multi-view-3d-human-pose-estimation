@@ -33,3 +33,8 @@
 - Final verification kept the milestone at `core_claim`.
 - Removed an unverified sparse-view stress extension from the standard run path and method-agnostic experiment overview so documented experiments match `scoring/scores.json`.
 - Re-ran `python validate.py --compare`; scoring and structural checks pass.
+
+### [2026-11-12 02:00] - core_claim (hardening)
+- Benchmark moved to real multi-person CMU Panoptic scenes (paper's standard sequences and five cameras) with a hidden, test-time-generated test split and a predictor interface; strict validity with worst-value failures.
+- Reference restored to the paper's cost, incremental pruning and train-split tuning: hidden-test AP25 63.35 / AP150 98.18 / recall 99.63 / MPJPE 22.41 mm (paper 54.66 / 99.17 / 99.83 / 23.62); beats the MvPose-style competitor on strict AP and the pairs-only ablation by 18.7 AP150.
+- Better variant beats the reference beyond paired-bootstrap noise; every shortcut scores far below the reference (`HARDENING.md`).
