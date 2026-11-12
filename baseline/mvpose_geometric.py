@@ -223,7 +223,7 @@ def main() -> None:
         bench = json.loads(Path(args.tune_on).read_text(encoding="utf-8"))
         gt = ground_truth_from_frames(bench["frames"])
         rows = []
-        for alpha in (0.3, 0.5, 0.6, 0.7, 0.8, 0.9):
+        for alpha in (0.5, 0.7, 0.8, 0.9, 0.93, 0.96, 0.99):
             frames = run(bench, alpha)
             preds = {
                 fid: [((np.asarray(p["joints_3d"]) * 1000.0).tolist(), p["score"]) for p in fr["predicted_poses"]]
