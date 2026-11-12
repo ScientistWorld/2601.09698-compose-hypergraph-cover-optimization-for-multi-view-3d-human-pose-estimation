@@ -70,7 +70,9 @@ def main() -> int:
         return 1
 
     results, status = {}, {}
-    tmp = Path(tempfile.mkdtemp(prefix="compose_test_"))
+    # Staged inside the workspace: the container's private /tmp is a small tmpfs.
+    (WORKSPACE / "tmp").mkdir(exist_ok=True)
+    tmp = Path(tempfile.mkdtemp(prefix="eval_hidden_", dir=WORKSPACE / "tmp"))
     try:
         inputs_path = tmp / "inputs.json"
         inputs_path.write_text(json.dumps(inputs), encoding="utf-8")

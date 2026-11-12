@@ -26,10 +26,10 @@ from eval.metrics import compute_metrics, ground_truth_from_frames  # noqa: E402
 from method.compose import generate_candidates, parse_frame, predict_frame, restrict_candidates  # noqa: E402
 
 GRID = {
-    "tau": [1000.0, 2000.0, 4000.0, 8000.0],
-    "lambda": [3e-4, 1e-3, 3e-3],
-    "gamma": [0.6, 1.0, 1.3, 1.7],
-    "singleton_score": [0.05, 0.3],
+    "tau": [2000.0, 4000.0, 8000.0, 16000.0, 32000.0],
+    "lambda": [1e-3, 3e-3, 1e-2, 3e-2],
+    "gamma": [1.0, 1.3, 1.7, 2.2, 3.0],
+    "singleton_score": [0.05, 0.3, 0.6, 0.9],
 }
 
 

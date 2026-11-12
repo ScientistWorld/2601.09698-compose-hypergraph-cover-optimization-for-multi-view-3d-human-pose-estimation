@@ -71,7 +71,9 @@ def main() -> None:
                                                 for p in by_id.get(fid, [])]} for fid in ids}
             payload["leak"] = "answers were readable"
         except Exception as exc:  # noqa: BLE001
-            payload["leak"] = f"blocked: {exc.__class__.__name__}"
+            payload["leak"] = f"blocked: {exc.__class__.__name__}: {exc}"
+        status = ROOT / "redteam" / "hardening" / "hidden_source_read_status.txt"
+        status.write_text(payload["leak"] + "\n")
     else:
         ref = reference(inputs, scratch)
         data = json.loads(Path(inputs).read_text())

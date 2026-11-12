@@ -1,7 +1,0 @@
-{
-  "tau": 8000.0,
-  "lambda": 0.003,
-  "gamma": 1.7,
-  "singleton_score": 0.3,
-  "max_edge_size": null
-}

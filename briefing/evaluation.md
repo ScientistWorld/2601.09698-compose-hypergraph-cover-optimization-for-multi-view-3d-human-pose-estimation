@@ -55,8 +55,9 @@ A run is **failed** — and receives the worst value of every metric (AP 0,
 recall 0, MPJPE 500 mm) — when the predictor crashes, times out, writes no or
 unparsable output, omits an input frame, emits more poses in a frame than that
 frame has 2D detections, or emits a pose without exactly 15 joints of 3 finite
-coordinates inside a 10 m capture volume or without a finite score.  Nothing
-else the predictor writes is read.
+coordinates (magnitude at most 10^6 m) or without a finite score.  A joint that
+is finite but far from the person is not invalid — it is simply a large error.
+Nothing else the predictor writes is read.
 
 ## Metrics (paper protocol)
 

@@ -51,7 +51,8 @@ def predictions_for(seed: str, names: tuple[str, ...]) -> tuple[dict, dict, list
     inputs = strip_answers(bench)
     gt = ground_truth_from_frames(bench["frames"])
     preds = {}
-    with tempfile.TemporaryDirectory(prefix="compose_audit_") as tmp:
+    (ROOT / "tmp").mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="audit_", dir=ROOT / "tmp") as tmp:
         ipath = Path(tmp) / "inputs.json"
         ipath.write_text(json.dumps(inputs))
         for name in names:
@@ -79,6 +80,8 @@ def main() -> None:
     full = {name: compute_metrics(p, gt) for name, p in preds.items()}
     report["seeds"]["hidden"] = full
     rng = random.Random(0)
+    if "compose" not in preds:
+        raise SystemExit("reference predictions missing; cannot run paired bootstrap")
     draws = {name: {m: [] for m in METRIC_NAMES} for name in preds if name != "compose"}
     for _ in range(BOOTSTRAP):
         picks = [frames[rng.randrange(len(frames))] for _ in frames]

@@ -53,7 +53,8 @@ def main() -> int:
         return 1
 
     results, status = {}, {}
-    with tempfile.TemporaryDirectory(prefix="compose_train_") as tmp:
+    (WORKSPACE / "tmp").mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="eval_train_", dir=WORKSPACE / "tmp") as tmp:
         inputs_path = Path(tmp) / "inputs.json"
         inputs_path.write_text(json.dumps(inputs), encoding="utf-8")
         for name, script in predictors.items():

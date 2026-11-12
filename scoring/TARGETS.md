@@ -17,6 +17,6 @@ Correct, separated 3D poses for every person.
 Nobody may be left out, and the output must be a valid set of complete poses.
 - **Metric**: `recall_500mm` (higher is better).
 - **Validity** (failed run = worst value of every metric): every input frame
-  answered, at most one pose per 2D detection in a frame, exactly 15 finite
-  joints inside the capture volume and a finite score per pose, predictor
-  finishes within the time limit.
+  answered, at most one pose per 2D detection in a frame, exactly 15 joints of
+  finite coordinates and a finite score per pose, predictor finishes within
+  the time limit.

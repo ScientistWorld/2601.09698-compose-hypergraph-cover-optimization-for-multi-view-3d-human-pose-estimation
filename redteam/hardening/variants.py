@@ -41,7 +41,7 @@ def weighted_dlt(pmats: np.ndarray, uv: np.ndarray, w: np.ndarray) -> np.ndarray
             rows.append(wt * r / max(np.linalg.norm(r), 1e-12))
     _, _, vt = np.linalg.svd(np.asarray(rows))
     h = vt[-1]
-    return h[:3] / (h[3] if abs(h[3]) > 1e-12 else 1e-12)
+    return h[:3] / h[3] if abs(h[3]) > 1e-12 else np.full(3, np.nan)
 
 
 def robust_pose(frame: compose.Frame, refs: tuple[tuple[int, int], ...]) -> np.ndarray:

@@ -89,7 +89,7 @@ def dlt_triangulate(pmats: np.ndarray, uv: np.ndarray) -> np.ndarray:
     _, _, vt = np.linalg.svd(a)
     homog = vt[..., -1, :]                              # (m, J, 4)
     w = homog[..., 3:4]
-    w = np.where(np.abs(w) < 1e-12, 1e-12, w)
+    w = np.where(np.abs(w) < 1e-12, np.nan, w)          # point at infinity: no finite position
     return homog[..., :3] / w
 
 

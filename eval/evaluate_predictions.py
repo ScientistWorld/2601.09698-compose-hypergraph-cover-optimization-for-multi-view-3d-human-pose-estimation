@@ -39,7 +39,8 @@ def main() -> int:
     inputs = strip_answers(benchmark)
     ground_truth = ground_truth_from_frames(benchmark["frames"])
 
-    with tempfile.TemporaryDirectory(prefix="compose_eval_") as tmp:
+    (WORKSPACE / "tmp").mkdir(exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="eval_public_", dir=WORKSPACE / "tmp") as tmp:
         if args.predictions:
             pred_path = Path(args.predictions)
             state = "ok" if pred_path.is_file() else "failed: prediction file not found"
@@ -64,8 +65,9 @@ def main() -> int:
     output.setdefault("_status", {})[args.method_name] = state
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # A failed run is a result (worst values), not an evaluator error.
     print(f"{args.method_name}: {state} {json.dumps(metrics, sort_keys=True)}")
-    return 0 if state == "ok" else 1
+    return 0
 
 
 if __name__ == "__main__":

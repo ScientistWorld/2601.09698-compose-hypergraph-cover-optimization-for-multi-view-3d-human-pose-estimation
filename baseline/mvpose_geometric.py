@@ -161,7 +161,7 @@ def dlt(pmats: np.ndarray, uv: np.ndarray) -> np.ndarray:
     a = a / np.maximum(np.linalg.norm(a, axis=-1, keepdims=True), 1e-12)
     _, _, vt = np.linalg.svd(a)
     h = vt[:, -1, :]
-    w = np.where(np.abs(h[:, 3:4]) < 1e-12, 1e-12, h[:, 3:4])
+    w = np.where(np.abs(h[:, 3:4]) < 1e-12, np.nan, h[:, 3:4])
     return h[:, :3] / w
 
 
@@ -223,7 +223,7 @@ def main() -> None:
         bench = json.loads(Path(args.tune_on).read_text(encoding="utf-8"))
         gt = ground_truth_from_frames(bench["frames"])
         rows = []
-        for alpha in (0.3, 0.5, 0.7):
+        for alpha in (0.3, 0.5, 0.6, 0.7, 0.8, 0.9):
             frames = run(bench, alpha)
             preds = {
                 fid: [((np.asarray(p["joints_3d"]) * 1000.0).tolist(), p["score"]) for p in fr["predicted_poses"]]

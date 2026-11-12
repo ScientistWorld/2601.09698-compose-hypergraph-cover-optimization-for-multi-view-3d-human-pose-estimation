@@ -30,7 +30,7 @@ from typing import Any
 NUM_JOINTS = 15
 AP_THRESHOLDS_MM = (25.0, 50.0, 100.0, 150.0)
 RECALL_THRESHOLD_MM = 500.0
-MAX_ABS_COORD_M = 10.0   # capture volume bound; anything outside is impossible
+MAX_ABS_COORD_M = 1.0e6  # overflow guard only: a far-away joint is a wrong joint, not an invalid one
 METRIC_NAMES = ("ap_25mm", "ap_50mm", "ap_100mm", "ap_150mm", "recall_500mm", "mpjpe_mm")
 FAILURE_METRICS = {
     "ap_25mm": 0.0,
@@ -66,7 +66,7 @@ def validate_predictions(payload: Any, max_poses: dict[str, int]) -> dict[str, l
     (``frames`` may also be a list of objects carrying ``frame_id``).  Every
     input frame must be present; a frame may hold at most as many poses as it
     has 2D detections; every pose needs exactly 15 joints of 3 finite
-    coordinates inside the capture volume and a finite score.
+    coordinates (|x| <= 1e6 m) and a finite score.
     Returns ``{frame_id: [(joints_mm, score), ...]}``.
     """
 
@@ -107,7 +107,7 @@ def validate_predictions(payload: Any, max_poses: dict[str, int]) -> dict[str, l
                 if not isinstance(joint, list) or len(joint) != 3 or not all(_is_real(v) for v in joint):
                     raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: joints must be 3 finite numbers")
                 if any(abs(v) > MAX_ABS_COORD_M for v in joint):
-                    raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: joint outside the capture volume")
+                    raise InvalidPredictions(f"frame {frame_id!r} pose {idx}: coordinate magnitude above 1e6 m")
                 joints_mm.append([1000.0 * float(v) for v in joint])
             score = pose.get("score")
             if not _is_real(score):
