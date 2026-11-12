@@ -1,0 +1,58 @@
+{
+  "_split": {
+    "frames": 300,
+    "people": 1022,
+    "sequences": {
+      "160224_haggling1": 50,
+      "160226_haggling1": 50,
+      "160422_ultimatum1": 100,
+      "160906_band1": 50,
+      "160906_ian1": 50
+    }
+  },
+  "_status": {
+    "compose_old_operating_point": "ok",
+    "compose_pairs_only": "failed: frame 'train_0_021' pose 4: joint outside the capture volume",
+    "compose_robust": "failed: frame 'train_2_000' pose 0: joint outside the capture volume",
+    "compose_three_cams": "failed: frame 'train_0_042' pose 2: joint outside the capture volume"
+  },
+  "experiments": {
+    "cmu_panoptic_main": {
+      "results": {
+        "compose_old_operating_point": {
+          "ap_100mm": 76.18845369196428,
+          "ap_150mm": 76.52987549938827,
+          "ap_25mm": 27.656839505791,
+          "ap_50mm": 71.18925592698619,
+          "mpjpe_mm": 31.17327369781991,
+          "recall_500mm": 97.55381604696673
+        },
+        "compose_pairs_only": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_robust": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_three_cams": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        }
+      }
+    }
+  },
+  "slice": "train"
+}

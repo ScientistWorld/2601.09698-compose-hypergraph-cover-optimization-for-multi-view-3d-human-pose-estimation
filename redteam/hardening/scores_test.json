@@ -1,0 +1,195 @@
+{
+  "_split": {
+    "frames": 400,
+    "people": 1367
+  },
+  "_status": {
+    "bruteforce_unpruned": "failed: frame 'test_0075' pose 3: joint outside the capture volume",
+    "compose_old_operating_point": "failed: frame 'test_0012' pose 1: joint outside the capture volume",
+    "compose_pairs_only": "failed: frame 'test_0012' pose 2: joint outside the capture volume",
+    "compose_robust": "failed: frame 'test_0012' pose 0: joint outside the capture volume",
+    "compose_three_cams": "ok",
+    "shortcut_constant": "ok",
+    "shortcut_crash": "failed: predictor exited with code 1",
+    "shortcut_empty": "ok",
+    "shortcut_forged_metrics": "ok",
+    "shortcut_hidden_source_read": "ok",
+    "shortcut_identity_grouping": "ok",
+    "shortcut_infinite": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+    "shortcut_missing_frames": "failed: missing frame 'test_0001'",
+    "shortcut_null_coordinates": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+    "shortcut_out_of_volume": "failed: frame 'test_0000' pose 0: joint outside the capture volume",
+    "shortcut_partial_pose_nan": "failed: frame 'test_0000' pose 0: joints must be 3 finite numbers",
+    "shortcut_spray_recall": "failed: frame 'test_0012' pose 0: joint outside the capture volume",
+    "shortcut_too_many_poses": "failed: predictor exited with code 1",
+    "shortcut_train_gt_lookup": "ok",
+    "shortcut_truncated_joints": "failed: frame 'test_0000' pose 0: need exactly 15 joints"
+  },
+  "experiments": {
+    "cmu_panoptic_main": {
+      "results": {
+        "bruteforce_unpruned": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_old_operating_point": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_pairs_only": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_robust": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "compose_three_cams": {
+          "ap_100mm": 89.1646598422613,
+          "ap_150mm": 90.11888166873612,
+          "ap_25mm": 19.979126507516334,
+          "ap_50mm": 72.63238276695229,
+          "mpjpe_mm": 39.54867724903722,
+          "recall_500mm": 93.56254572055596
+        },
+        "shortcut_constant": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 482.89309378060153,
+          "recall_500mm": 0.8778346744696416
+        },
+        "shortcut_crash": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_empty": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_forged_metrics": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 482.89309378060153,
+          "recall_500mm": 0.8778346744696416
+        },
+        "shortcut_hidden_source_read": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_identity_grouping": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_infinite": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_missing_frames": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_null_coordinates": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_out_of_volume": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_partial_pose_nan": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_spray_recall": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_too_many_poses": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "shortcut_train_gt_lookup": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.001063483903379322,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 370.52377623566736,
+          "recall_500mm": 21.28749085588881
+        },
+        "shortcut_truncated_joints": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        }
+      }
+    }
+  },
+  "slice": "test"
+}

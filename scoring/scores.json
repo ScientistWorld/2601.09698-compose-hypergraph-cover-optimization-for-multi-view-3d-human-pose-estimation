@@ -1,0 +1,19 @@
+{
+  "_status": {
+    "compose": "failed: frame 'train_2_000' pose 0: joint outside the capture volume"
+  },
+  "experiments": {
+    "cmu_panoptic_main": {
+      "results": {
+        "compose": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        }
+      }
+    }
+  }
+}

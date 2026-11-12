@@ -1,0 +1,49 @@
+{
+  "_split": {
+    "frames": 300,
+    "people": 1022,
+    "sequences": {
+      "160224_haggling1": 50,
+      "160226_haggling1": 50,
+      "160422_ultimatum1": 100,
+      "160906_band1": 50,
+      "160906_ian1": 50
+    }
+  },
+  "_status": {
+    "compose": "failed: frame 'train_2_000' pose 0: joint outside the capture volume",
+    "mvpose_geometric": "ok",
+    "pairwise_baseline": "ok"
+  },
+  "experiments": {
+    "cmu_panoptic_main": {
+      "results": {
+        "compose": {
+          "ap_100mm": 0.0,
+          "ap_150mm": 0.0,
+          "ap_25mm": 0.0,
+          "ap_50mm": 0.0,
+          "mpjpe_mm": 500.0,
+          "recall_500mm": 0.0
+        },
+        "mvpose_geometric": {
+          "ap_100mm": 86.12058900377983,
+          "ap_150mm": 89.69980788632247,
+          "ap_25mm": 44.25134002850374,
+          "ap_50mm": 74.55757708804676,
+          "mpjpe_mm": 34.61382980252048,
+          "recall_500mm": 95.59686888454011
+        },
+        "pairwise_baseline": {
+          "ap_100mm": 49.89406912526449,
+          "ap_150mm": 51.15725735417688,
+          "ap_25mm": 25.044001645849423,
+          "ap_50mm": 43.67438817796626,
+          "mpjpe_mm": 67.03297311588445,
+          "recall_500mm": 72.30919765166341
+        }
+      }
+    }
+  },
+  "slice": "train"
+}
